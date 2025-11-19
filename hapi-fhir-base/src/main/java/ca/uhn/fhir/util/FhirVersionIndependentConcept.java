@@ -19,9 +19,14 @@
  */
 package ca.uhn.fhir.util;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hl7.fhir.instance.model.api.IBaseDatatype;
+
+import java.util.List;
+import java.util.Objects;
 
 public class FhirVersionIndependentConcept implements Comparable<FhirVersionIndependentConcept> {
 
@@ -29,24 +34,41 @@ public class FhirVersionIndependentConcept implements Comparable<FhirVersionInde
 	private final String mySystemVersion;
 	private final String myCode;
 	private final String myDisplay;
+	private final List<ConceptPropertyComponent> myProperty;
 	private int myHashCode;
 
-	/**
-	 * Constructor
-	 */
 	public FhirVersionIndependentConcept(String theSystem, String theCode) {
-		this(theSystem, theCode, null);
+		this(theSystem, theCode, null, List.of());
+	}
+
+	public FhirVersionIndependentConcept(String theSystem, String theCode, List<ConceptPropertyComponent> theProperty) {
+		this(theSystem, theCode, null, theProperty);
 	}
 
 	public FhirVersionIndependentConcept(String theSystem, String theCode, String theDisplay) {
-		this(theSystem, theCode, theDisplay, null);
+		this(theSystem, theCode, theDisplay, null, List.of());
+	}
+
+	public FhirVersionIndependentConcept(
+			String theSystem, String theCode, String theDisplay, List<ConceptPropertyComponent> theProperty) {
+		this(theSystem, theCode, theDisplay, null, theProperty);
 	}
 
 	public FhirVersionIndependentConcept(String theSystem, String theCode, String theDisplay, String theSystemVersion) {
+		this(theSystem, theCode, theDisplay, theSystemVersion, List.of());
+	}
+
+	public FhirVersionIndependentConcept(
+			String theSystem,
+			String theCode,
+			String theDisplay,
+			String theSystemVersion,
+			List<ConceptPropertyComponent> theProperty) {
 		mySystem = theSystem;
 		mySystemVersion = theSystemVersion;
 		myCode = theCode;
 		myDisplay = theDisplay;
+		myProperty = theProperty;
 		myHashCode = new HashCodeBuilder(17, 37).append(mySystem).append(myCode).toHashCode();
 	}
 
@@ -64,6 +86,19 @@ public class FhirVersionIndependentConcept implements Comparable<FhirVersionInde
 
 	public String getCode() {
 		return myCode;
+	}
+
+	public List<ConceptPropertyComponent> getProperty() {
+		return myProperty;
+	}
+
+	public @Nullable ConceptPropertyComponent findPropertyByCode(String theCode) {
+		for (ConceptPropertyComponent next : myProperty) {
+			if (Objects.equals(next.getCode(), theCode)) {
+				return next;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -100,5 +135,35 @@ public class FhirVersionIndependentConcept implements Comparable<FhirVersionInde
 	@Override
 	public String toString() {
 		return "[" + mySystem + "|" + myCode + "]";
+	}
+
+	public static class ConceptPropertyComponent {
+		private final String myCode;
+		private final IBaseDatatype myValue;
+
+		public ConceptPropertyComponent(String theCode, IBaseDatatype theValue) {
+			myCode = theCode;
+			myValue = theValue;
+		}
+
+		public String getCode() {
+			return myCode;
+		}
+
+		public IBaseDatatype getValue() {
+			return myValue;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || getClass() != o.getClass()) return false;
+			ConceptPropertyComponent that = (ConceptPropertyComponent) o;
+			return Objects.equals(myCode, that.myCode) && Objects.equals(myValue, that.myValue);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(myCode, myValue);
+		}
 	}
 }
