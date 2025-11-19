@@ -30,6 +30,7 @@ import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.api.server.RequestDetails;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hl7.fhir.common.hapi.validation.support.TxResourceValidationSupport;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.IBaseDatatype;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
@@ -46,6 +47,9 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 
 	@Autowired
 	private ITerminologyValidationSvc myTerminologyValidationSvc;
+
+	@Autowired
+	private TxResourceValidationSupport myTxResourceValidationSupport;
 
 	/**
 	 * $lookup operation
@@ -70,9 +74,11 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 					IPrimitiveType<String> theDisplayLanguage,
 			@OperationParam(name = "property", min = 0, max = OperationParam.MAX_UNLIMITED, typeName = "code")
 					List<IPrimitiveType<String>> thePropertyNames,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			IFhirResourceDaoCodeSystem<?> dao = (IFhirResourceDaoCodeSystem<?>) getDao();
 			IValidationSupport.LookupCodeResult result;
@@ -82,6 +88,7 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			result.throwNotFoundIfAppropriate();
 			return result.toParameters(theRequestDetails.getFhirContext(), thePropertyNames);
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}
@@ -103,9 +110,11 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			@OperationParam(name = "codingA", min = 0, max = 1, typeName = "Coding") IBaseCoding theCodingA,
 			@OperationParam(name = "codingB", min = 0, max = 1, typeName = "Coding") IBaseCoding theCodingB,
 			@OperationParam(name = "version", min = 0, max = 1, typeName = "string") IPrimitiveType<String> theVersion,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			IFhirResourceDaoCodeSystem<?> dao = (IFhirResourceDaoCodeSystem<?>) getDao();
 			IFhirResourceDaoCodeSystem.SubsumesResult result;
@@ -113,6 +122,7 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			result = dao.subsumes(theCodeA, theCodeB, theSystem, theCodingA, theCodingB, theRequestDetails);
 			return result.toParameters(theRequestDetails.getFhirContext());
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}
@@ -144,9 +154,11 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			@OperationParam(name = "coding", min = 0, max = 1, typeName = "Coding") IBaseCoding theCoding,
 			@OperationParam(name = "codeableConcept", min = 0, max = 1, typeName = "CodeableConcept")
 					IBaseDatatype theCodeableConcept,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			CodeSystemValidationRequest request = CodeSystemValidationRequest.builder()
 					.codeSystemId(theId)
@@ -161,6 +173,7 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			CodeValidationResult result = myTerminologyValidationSvc.validateCodeAgainstCodeSystem(request);
 			return result.toParameters(getContext());
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}
