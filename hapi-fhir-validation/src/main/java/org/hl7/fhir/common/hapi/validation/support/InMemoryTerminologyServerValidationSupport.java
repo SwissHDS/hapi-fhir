@@ -14,6 +14,7 @@ import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.hl7.fhir.dstu2.model.ValueSet;
+import org.hl7.fhir.instance.model.api.IBaseBooleanDatatype;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r5.model.CanonicalType;
@@ -22,11 +23,13 @@ import org.hl7.fhir.r5.model.Enumerations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -650,17 +653,63 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				retVal);
 
 		org.hl7.fhir.r5.model.ValueSet vs = new org.hl7.fhir.r5.model.ValueSet();
+		vs.setIdElement(theInput.getIdElement());
+		vs.setUrlElement(theInput.getUrlElement());
+		vs.setVersionElement(theInput.getVersionElement());
+		vs.setNameElement(theInput.getNameElement());
+		vs.setTitleElement(theInput.getTitleElement());
+		vs.setStatusElement(theInput.getStatusElement());
+		vs.setExperimentalElement(theInput.getExperimentalElement());
+		vs.setDateElement(theInput.getDateElement());
+		vs.setPublisherElement(theInput.getPublisherElement());
+		vs.getExpansion().setIdentifier("urn:uuid:" + UUID.randomUUID());
+		vs.getExpansion().setTimestamp(new Date());
 		retVal.setValueSet(vs);
 		for (FhirVersionIndependentConcept next : concepts) {
-			org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent contains =
-					vs.getExpansion().addContains();
-			contains.setSystem(next.getSystem());
-			contains.setCode(next.getCode());
-			contains.setDisplay(next.getDisplay());
-			contains.setVersion(next.getSystemVersion());
+			var isInactive = isInactiveConcept(next);
+			var inactiveElement = theInput.getCompose().getInactiveElement();
+			if (inactiveElement == null
+					|| inactiveElement.getValue() == null
+					|| inactiveElement.booleanValue()
+					|| !isInactive) {
+				org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent contains =
+						vs.getExpansion().addContains();
+				contains.setSystem(next.getSystem());
+				contains.setCode(next.getCode());
+				contains.setDisplay(next.getDisplay());
+				contains.setVersion(next.getSystemVersion());
+				if (isInactive) {
+					contains.setInactive(true);
+				}
+				if (isAbstractConcept(next)) {
+					contains.setAbstract(true);
+				}
+			}
 		}
 
 		return retVal;
+	}
+
+	private boolean isAbstractConcept(FhirVersionIndependentConcept theConcept) {
+		var notSelectableProperty = theConcept.findPropertyByCode("notSelectable");
+		var abstractProperty = theConcept.findPropertyByCode("abstract");
+		return (notSelectableProperty != null
+						&& notSelectableProperty.getValue() instanceof IBaseBooleanDatatype n
+						&& n.getValue())
+				|| (abstractProperty != null
+						&& abstractProperty.getValue() instanceof IBaseBooleanDatatype a
+						&& a.getValue());
+	}
+
+	private boolean isInactiveConcept(FhirVersionIndependentConcept theConcept) {
+		var inactiveProperty = theConcept.findPropertyByCode("inactive");
+		var statusProperty = theConcept.findPropertyByCode("status");
+		return (inactiveProperty != null
+						&& inactiveProperty.getValue() instanceof IBaseBooleanDatatype i
+						&& i.getValue())
+				|| (statusProperty != null
+						&& statusProperty.getValue() instanceof IPrimitiveType<?> s
+						&& List.of("retired", "inactive").contains(s.getValueAsString()));
 	}
 
 	/**
@@ -992,7 +1041,14 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				for (org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent next :
 						subExpansion.getExpansion().getContains()) {
 					nextCodeList.add(new FhirVersionIndependentConcept(
-							next.getSystem(), next.getCode(), next.getDisplay(), next.getVersion()));
+							next.getSystem(),
+							next.getCode(),
+							next.getDisplay(),
+							next.getVersion(),
+							next.getProperty().stream()
+									.map(property -> new FhirVersionIndependentConcept.ConceptPropertyComponent(
+											property.getCode(), property.getValue()))
+									.toList()));
 				}
 			}
 		}
@@ -1084,7 +1140,14 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 			if (isNotBlank(next.getCode())) {
 				if (theCodeFilter == null || theCodeFilter.contains(next.getCode())) {
 					theTarget.add(new FhirVersionIndependentConcept(
-							theCodeSystemUrl, next.getCode(), next.getDisplay(), theCodeSystemVersion));
+							theCodeSystemUrl,
+							next.getCode(),
+							next.getDisplay(),
+							theCodeSystemVersion,
+							next.getProperty().stream()
+									.map(property -> new FhirVersionIndependentConcept.ConceptPropertyComponent(
+											property.getCode(), property.getValue()))
+									.toList()));
 				}
 			}
 			addCodes(theCodeSystemUrl, theCodeSystemVersion, next.getConcept(), theTarget, theCodeFilter);
@@ -1222,7 +1285,14 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 			List<FhirVersionIndependentConcept> theFhirVersionIndependentConcepts) {
 		for (org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent next : theInput) {
 			theFhirVersionIndependentConcepts.add(new FhirVersionIndependentConcept(
-					next.getSystem(), next.getCode(), next.getDisplay(), next.getVersion()));
+					next.getSystem(),
+					next.getCode(),
+					next.getDisplay(),
+					next.getVersion(),
+					next.getProperty().stream()
+							.map(property -> new FhirVersionIndependentConcept.ConceptPropertyComponent(
+									property.getCode(), property.getValue()))
+							.toList()));
 			flattenAndConvertCodesR5(next.getContains(), theFhirVersionIndependentConcepts);
 		}
 	}
