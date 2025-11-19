@@ -32,6 +32,7 @@ import ca.uhn.fhir.rest.api.server.RequestDetails;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.hapi.converters.canonical.VersionCanonicalizer;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hl7.fhir.common.hapi.validation.support.TxResourceValidationSupport;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.IBaseDatatype;
@@ -45,6 +46,8 @@ import org.hl7.fhir.r4.model.ConceptMap;
 import org.hl7.fhir.r4.model.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static ca.uhn.fhir.util.DatatypeUtil.toBooleanValue;
 import static ca.uhn.fhir.util.DatatypeUtil.toStringValue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -53,6 +56,9 @@ public abstract class BaseJpaResourceProviderConceptMap<T extends IBaseResource>
 
 	@Autowired
 	private VersionCanonicalizer myVersionCanonicalizer;
+
+	@Autowired
+	private TxResourceValidationSupport myTxResourceValidationSupport;
 
 	/**
 	 * Note: Several parameters for the $translate operation were renamed between FHIR R4 and R5.
@@ -113,6 +119,7 @@ public abstract class BaseJpaResourceProviderConceptMap<T extends IBaseResource>
 					IPrimitiveType<String> theTargetCodeSystemR5,
 			@OperationParam(name = "reverse", min = 0, max = 1, typeName = "boolean")
 					IPrimitiveType<Boolean> theReverse,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		Coding sourceCoding = myVersionCanonicalizer.codingToCanonical(
@@ -184,12 +191,14 @@ public abstract class BaseJpaResourceProviderConceptMap<T extends IBaseResource>
 		}
 
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			IFhirResourceDaoConceptMap<ConceptMap> dao = (IFhirResourceDaoConceptMap<ConceptMap>) getDao();
 			TranslateConceptResults result = dao.translate(translationRequest, theRequestDetails);
 			Parameters parameters = TermConceptMappingSvcImpl.toParameters(result);
 			return myVersionCanonicalizer.parametersFromCanonical(parameters);
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}

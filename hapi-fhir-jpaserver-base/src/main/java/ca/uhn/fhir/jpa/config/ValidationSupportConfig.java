@@ -30,6 +30,7 @@ import ca.uhn.fhir.jpa.validation.ValidatorPolicyAdvisor;
 import ca.uhn.fhir.jpa.validation.ValidatorResourceFetcher;
 import ca.uhn.fhir.validation.IInstanceValidatorModule;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
+import org.hl7.fhir.common.hapi.validation.support.TxResourceValidationSupport;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.hl7.fhir.common.hapi.validation.validator.WorkerContextValidationSupportAdapter;
 import org.hl7.fhir.r5.utils.validation.constants.BestPracticeWarningLevel;
@@ -61,6 +62,11 @@ public class ValidationSupportConfig {
 				new InMemoryTerminologyServerValidationSupport(theFhirContext);
 		retVal.setIssueSeverityForCodeDisplayMismatch(theStorageSettings.getIssueSeverityForCodeDisplayMismatch());
 		return retVal;
+	}
+
+	@Bean
+	public TxResourceValidationSupport txResourceValidationSupport(FhirContext theFhirContext) {
+		return new TxResourceValidationSupport(theFhirContext);
 	}
 
 	@Bean(name = JpaConfig.JPA_VALIDATION_SUPPORT)
