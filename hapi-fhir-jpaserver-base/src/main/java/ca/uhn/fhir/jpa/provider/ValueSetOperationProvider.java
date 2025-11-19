@@ -40,6 +40,7 @@ import ca.uhn.fhir.rest.server.provider.ProviderConstants;
 import ca.uhn.fhir.util.ParametersUtil;
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hl7.fhir.common.hapi.validation.support.TxResourceValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
@@ -52,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -73,6 +75,9 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 	@Autowired
 	@Qualifier(JpaConfig.JPA_VALIDATION_SUPPORT_CHAIN)
 	private ValidationSupportChain myValidationSupportChain;
+
+	@Autowired
+	private TxResourceValidationSupport myTxResourceValidationSupport;
 
 	@VisibleForTesting
 	public void setDaoRegistryForUnitTest(DaoRegistry theDaoRegistry) {
@@ -109,9 +114,11 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 							max = 1,
 							typeName = "boolean")
 					IPrimitiveType<Boolean> theIncludeHierarchy,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 
 			return getDao().expand(
@@ -129,6 +136,7 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 							theRequestDetails);
 
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}
@@ -164,10 +172,12 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 			@OperationParam(name = "coding", min = 0, max = 1, typeName = "Coding") IBaseCoding theCoding,
 			@OperationParam(name = "codeableConcept", min = 0, max = 1, typeName = "CodeableConcept")
 					ICompositeType theCodeableConcept,
+			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		CodeValidationResult result;
 		startRequest(theServletRequest);
+		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			// If a Remote Terminology Server has been configured, use it
 			if (myValidationSupportChain != null && myValidationSupportChain.isRemoteTerminologyServiceConfigured()) {
@@ -226,6 +236,7 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 			}
 			return result.toParameters(getContext());
 		} finally {
+			myTxResourceValidationSupport.clearTxResourceForCurrentRequest();
 			endRequest(theServletRequest);
 		}
 	}
