@@ -134,7 +134,6 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.DomainResource;
-import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.IntegerType;
@@ -542,7 +541,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						myContext, count, expansionOptions.isIncludeHierarchy());
 		accumulator.setHardExpansionMaximumSize(myStorageSettings.getMaximumExpansionSize());
 		accumulator.setSkipCountRemaining(offset);
-		accumulator.setIdentifier(UUID.randomUUID().toString());
+		accumulator.setIdentifier("urn:uuid:" + UUID.randomUUID());
 		accumulator.setTimestamp(new Date());
 		accumulator.setOffset(offset);
 
@@ -559,9 +558,15 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		}
 
 		ValueSet valueSet = new ValueSet();
-		valueSet.setUrl(theValueSetToExpand.getUrl());
-		valueSet.setId(theValueSetToExpand.getId());
-		valueSet.setStatus(Enumerations.PublicationStatus.ACTIVE);
+		valueSet.setIdElement(theValueSetToExpand.getIdElement());
+		valueSet.setUrlElement(theValueSetToExpand.getUrlElement());
+		valueSet.setVersionElement(theValueSetToExpand.getVersionElement());
+		valueSet.setNameElement(theValueSetToExpand.getNameElement());
+		valueSet.setTitleElement(theValueSetToExpand.getTitleElement());
+		valueSet.setStatusElement(theValueSetToExpand.getStatusElement());
+		valueSet.setExperimentalElement(theValueSetToExpand.getExperimentalElement());
+		valueSet.setDateElement(theValueSetToExpand.getDateElement());
+		valueSet.setPublisherElement(theValueSetToExpand.getPublisherElement());
 		valueSet.setCompose(theValueSetToExpand.getCompose());
 		valueSet.setExpansion(accumulator);
 
