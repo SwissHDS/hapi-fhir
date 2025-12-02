@@ -3440,6 +3440,9 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			@Nonnull IBaseResource theValueSetToExpand) {
 		ValueSet canonicalInput = myVersionCanonicalizer.valueSetToCanonical(theValueSetToExpand);
 		org.hl7.fhir.r4.model.ValueSet expandedR4 = expandValueSet(theExpansionOptions, canonicalInput);
+		expandedR4.getExpansion().addParameter().setName("activeOnly").setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
+		expandedR4.getExpansion().addParameter().setName("excludeNested").setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
+		expandedR4.getExpansion().addParameter().setName("includeDesignations").setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
 		return new ValueSetExpansionOutcome(myVersionCanonicalizer.valueSetFromCanonical(expandedR4));
 	}
 

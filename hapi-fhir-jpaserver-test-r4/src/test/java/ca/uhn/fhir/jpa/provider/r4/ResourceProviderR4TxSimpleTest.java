@@ -143,12 +143,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> {
 				var displayLanguage = expansion.getParameter("displayLanguage");
@@ -261,12 +261,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(c ->
 				assertThat(c.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")
@@ -366,12 +366,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> assertThat(getContainsEntryByCode(contains, "code1").getDisplay()).isEqualTo("Display 1"),
@@ -480,12 +480,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> assertThat(getContainsEntryByCode(contains, "code1").getDisplay()).isEqualTo("Display 1"),
@@ -596,12 +596,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(c ->
 				assertThat(c.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")
@@ -708,12 +708,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> {
@@ -817,12 +817,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> {
@@ -925,12 +925,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> assertThat(getContainsEntryByCode(contains, "code1").getDisplay()).isEqualTo("Display 1"),
@@ -1032,12 +1032,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> assertThat(getContainsEntryByCode(contains, "code1").getDisplay()).isEqualTo("Display 1"),
@@ -1139,12 +1139,12 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 			() -> {
 				var excludeNested = expansion.getParameter("excludeNested");
 				assertThat(excludeNested).isNotNull();
-				assertThat(excludeNested.getValueBooleanType()).isEqualTo(new BooleanType(true));
+				assertThat(excludeNested.getValueBooleanType().getValue()).isEqualTo(true);
 			},
 			() -> {
 				var usedCodeSystem = expansion.getParameter("used-codesystem");
 				assertThat(usedCodeSystem).isNotNull();
-				assertThat(usedCodeSystem.getValueUriType()).isEqualTo(new UriType("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0"));
+				assertThat(usedCodeSystem.getValueUriType().getValue()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple|0.1.0");
 			},
 			() -> contains.forEach(contain -> assertThat(contain.getSystem()).isEqualTo("http://hl7.org/fhir/test/CodeSystem/simple")),
 			() -> assertThat(getContainsEntryByCode(contains, "code1").getDisplay()).isEqualTo("Display 1"),

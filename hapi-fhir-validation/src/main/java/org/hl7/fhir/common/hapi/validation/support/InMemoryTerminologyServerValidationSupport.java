@@ -78,11 +78,12 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 			ValidationSupportContext theValidationSupportContext,
 			ValueSetExpansionOptions theExpansionOptions,
 			@Nonnull IBaseResource theValueSetToExpand) {
-		return expandValueSet(theValidationSupportContext, theValueSetToExpand, null, null);
+		return expandValueSet(theValidationSupportContext, theExpansionOptions, theValueSetToExpand, null, null);
 	}
 
 	private ValueSetExpansionOutcome expandValueSet(
 			ValidationSupportContext theValidationSupportContext,
+			ValueSetExpansionOptions theExpansionOptions,
 			IBaseResource theValueSetToExpand,
 			String theWantSystemAndVersion,
 			String theWantCode) {
@@ -97,6 +98,10 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 		if (expansionR5 == null) {
 			return null;
 		}
+
+		expansionR5.getExpansion().addParameter().setName("activeOnly").setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
+		expansionR5.getExpansion().addParameter().setName("excludeNested").setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
+		expansionR5.getExpansion().addParameter().setName("includeDesignations").setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
 
 		IBaseResource expansion = myVersionCanonicalizer.valueSetFromValidatorCanonical(expansionR5);
 		return new ValueSetExpansionOutcome(expansion);
@@ -268,7 +273,7 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 		}
 
 		ValueSetExpansionOutcome valueSetExpansionOutcome =
-				expandValueSet(theValidationSupportContext, vs, theCodeSystem, theCode);
+				expandValueSet(theValidationSupportContext, new ValueSetExpansionOptions(), vs, theCodeSystem, theCode);
 		if (valueSetExpansionOutcome == null) {
 			return null;
 		}

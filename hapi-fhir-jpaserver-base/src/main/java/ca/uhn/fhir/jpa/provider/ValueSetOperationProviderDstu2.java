@@ -97,6 +97,9 @@ public class ValueSetOperationProviderDstu2 extends ValueSetOperationProvider {
 							theCount,
 							theDisplayLanguage,
 							theIncludeHierarchy,
+							null,
+							null,
+							null,
 							theRequestDetails);
 
 		} finally {
