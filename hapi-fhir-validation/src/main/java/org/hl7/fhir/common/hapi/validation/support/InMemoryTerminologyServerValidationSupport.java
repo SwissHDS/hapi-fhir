@@ -17,9 +17,11 @@ import org.hl7.fhir.dstu2.model.ValueSet;
 import org.hl7.fhir.instance.model.api.IBaseBooleanDatatype;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r5.model.BooleanType;
 import org.hl7.fhir.r5.model.CanonicalType;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.Enumerations;
+import org.hl7.fhir.r5.model.UriType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -639,10 +641,14 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 
 		ValueSetAndMessages retVal = new ValueSetAndMessages();
 		Set<FhirVersionIndependentConcept> concepts = new HashSet<>();
+		Set<CodeSystem> usedCodeSystems = new HashSet<>();
+		Set<org.hl7.fhir.r5.model.ValueSet> usedValueSets = new HashSet<>();
 
 		expandValueSetR5IncludeOrExcludes(
 				theValidationSupportContext,
 				concepts,
+				usedCodeSystems,
+				usedValueSets,
 				theInput.getCompose().getInclude(),
 				true,
 				theWantSystemUrlAndVersion,
@@ -651,6 +657,8 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 		expandValueSetR5IncludeOrExcludes(
 				theValidationSupportContext,
 				concepts,
+				usedCodeSystems,
+				usedValueSets,
 				theInput.getCompose().getExclude(),
 				false,
 				theWantSystemUrlAndVersion,
@@ -691,6 +699,13 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				}
 			}
 		}
+		for (CodeSystem codeSystem : usedCodeSystems) {
+			vs.getExpansion().addParameter().setName("used-codesystem").setValue(new UriType(codeSystem.getVUrl()));
+		}
+		for (org.hl7.fhir.r5.model.ValueSet valueSet : usedValueSets) {
+			vs.getExpansion().addParameter().setName("used-valueset").setValue(new UriType(valueSet.getVUrl()));
+		}
+		vs.getExpansion().setTotal(vs.getExpansion().getContains().size());
 
 		return retVal;
 	}
@@ -728,12 +743,21 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 			org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent theIncludeOrExclude)
 			throws ExpansionCouldNotBeCompletedInternallyException {
 		expandValueSetR5IncludeOrExclude(
-				theValidationSupportContext, theConsumer, null, null, theIncludeOrExclude, new ValueSetAndMessages());
+				theValidationSupportContext,
+				theConsumer,
+				new HashSet<>(),
+				new HashSet<>(),
+				null,
+				null,
+				theIncludeOrExclude,
+				new ValueSetAndMessages());
 	}
 
 	private void expandValueSetR5IncludeOrExcludes(
 			ValidationSupportContext theValidationSupportContext,
 			Set<FhirVersionIndependentConcept> theConcepts,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<org.hl7.fhir.r5.model.ValueSet> theUsedValueSets,
 			List<org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent> theComposeList,
 			boolean theComposeListIsInclude,
 			@Nullable String theWantSystemUrlAndVersion,
@@ -751,6 +775,8 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				theComposeListIsInclude,
 				theValidationSupportContext,
 				consumer,
+				theUsedCodeSystems,
+				theUsedValueSets,
 				theComposeList,
 				theWantSystemUrlAndVersion,
 				theWantCode,
@@ -761,6 +787,8 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 			boolean theComposeListIsInclude,
 			ValidationSupportContext theValidationSupportContext,
 			Consumer<FhirVersionIndependentConcept> theConsumer,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<org.hl7.fhir.r5.model.ValueSet> theUsedValueSets,
 			List<org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent> theComposeList,
 			@Nullable String theWantSystemUrlAndVersion,
 			@Nullable String theWantCode,
@@ -778,6 +806,8 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				boolean outcome = expandValueSetR5IncludeOrExclude(
 						theValidationSupportContext,
 						theConsumer,
+						theUsedCodeSystems,
+						theUsedValueSets,
 						theWantSystemUrlAndVersion,
 						theWantCode,
 						nextInclude,
@@ -806,6 +836,8 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 	private boolean expandValueSetR5IncludeOrExclude(
 			ValidationSupportContext theValidationSupportContext,
 			Consumer<FhirVersionIndependentConcept> theConsumer,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<org.hl7.fhir.r5.model.ValueSet> theUsedValueSets,
 			@Nullable String theWantSystemUrlAndVersion,
 			@Nullable String theWantCode,
 			org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent theInclude,
@@ -1043,6 +1075,7 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 									CodeValidationIssueCode.INVALID,
 									CodeValidationIssueCoding.VS_INVALID));
 				}
+				theUsedValueSets.add(vs);
 				for (org.hl7.fhir.r5.model.ValueSet.ValueSetExpansionContainsComponent next :
 						subExpansion.getExpansion().getContains()) {
 					nextCodeList.add(new FhirVersionIndependentConcept(
@@ -1077,6 +1110,10 @@ public class InMemoryTerminologyServerValidationSupport extends BaseTerminologyS
 				theConsumer.accept(next);
 				retVal = true;
 			}
+		}
+
+		if (includeOrExcludeSystemResource != null) {
+			theUsedCodeSystems.add(includeOrExcludeSystemResource);
 		}
 
 		return retVal;
