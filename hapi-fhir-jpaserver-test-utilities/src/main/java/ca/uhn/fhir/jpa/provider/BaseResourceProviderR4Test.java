@@ -46,6 +46,8 @@ import ca.uhn.fhir.test.utilities.server.RestfulServerExtension;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.hl7.fhir.common.hapi.validation.support.TxResourceValidationSupport;
+import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Parameters;
@@ -104,6 +106,9 @@ public abstract class BaseResourceProviderR4Test extends BaseJpaR4Test {
 				s.registerProvider(myAppCtx.getBean(PatientMergeProvider.class));
 
 				s.setPagingProvider(myAppCtx.getBean(DatabaseBackedPagingProvider.class));
+
+				var validationSupportChain = myAppCtx.getBean(ValidationSupportChain.class);
+				validationSupportChain.addValidationSupport(myAppCtx.getBean(TxResourceValidationSupport.class));
 
 				JpaCapabilityStatementProvider confProvider = new JpaCapabilityStatementProvider(
 						s, mySystemDao, myStorageSettings, mySearchParamRegistry, myValidationSupport);
