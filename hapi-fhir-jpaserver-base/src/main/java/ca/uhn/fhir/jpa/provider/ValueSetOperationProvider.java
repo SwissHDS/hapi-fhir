@@ -114,6 +114,24 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 							max = 1,
 							typeName = "boolean")
 					IPrimitiveType<Boolean> theIncludeHierarchy,
+			@OperationParam(
+				name = JpaConstants.OPERATION_EXPAND_PARAM_ACTIVE_ONLY,
+				min = 0,
+				max = 1,
+				typeName = "boolean")
+			IPrimitiveType<Boolean> theActiveOnly,
+			@OperationParam(
+				name = JpaConstants.OPERATION_EXPAND_PARAM_EXCLUDE_NESTED,
+				min = 0,
+				max = 1,
+				typeName = "boolean")
+			IPrimitiveType<Boolean> theExcludeNested,
+			@OperationParam(
+				name = JpaConstants.OPERATION_EXPAND_PARAM_INCLUDE_DESIGNATIONS,
+				min = 0,
+				max = 1,
+				typeName = "boolean")
+			IPrimitiveType<Boolean> theIncludeDesignations,
 			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
@@ -133,6 +151,9 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 							theCount,
 							theDisplayLanguage,
 							theIncludeHierarchy,
+							theActiveOnly,
+							theExcludeNested,
+							theIncludeDesignations,
 							theRequestDetails);
 
 		} finally {
@@ -287,6 +308,9 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 			IPrimitiveType<Integer> theOffset,
 			IPrimitiveType<Integer> theCount,
 			IPrimitiveType<Boolean> theIncludeHierarchy,
+			IPrimitiveType<Boolean> theActiveOnly,
+			IPrimitiveType<Boolean> theExcludeNested,
+			IPrimitiveType<Boolean> theIncludeDesignations,
 			IPrimitiveType<String> theFilter,
 			IPrimitiveType<String> theDisplayLanguage) {
 		int offset = theStorageSettings.getPreExpandValueSetsDefaultOffset();
@@ -323,6 +347,18 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 
 		if (theIncludeHierarchy != null && Boolean.TRUE.equals(theIncludeHierarchy.getValue())) {
 			options.setIncludeHierarchy(true);
+		}
+
+		if (theActiveOnly != null && Boolean.TRUE.equals(theActiveOnly.getValue())) {
+			options.setActiveOnly(true);
+		}
+
+		if (theExcludeNested != null && Boolean.TRUE.equals(theExcludeNested.getValue())) {
+			options.setExcludeNested(true);
+		}
+
+		if (theIncludeDesignations != null && Boolean.TRUE.equals(theIncludeDesignations.getValue())) {
+			options.setIncludeDesignations(true);
 		}
 
 		if (theFilter != null) {

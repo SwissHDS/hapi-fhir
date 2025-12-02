@@ -34,6 +34,9 @@ public class ValueSetExpansionOptions {
 	private int myCount = 1000;
 	private int myOffset = 0;
 	private boolean myIncludeHierarchy;
+	private boolean myActiveOnly;
+	private boolean myExcludeNested;
+	private boolean myIncludeDesignations;
 	private String myFilter;
 
 	private String myDisplayLanguage;
@@ -116,6 +119,30 @@ public class ValueSetExpansionOptions {
 		myIncludeHierarchy = theIncludeHierarchy;
 	}
 
+	public boolean isActiveOnly() {
+		return myActiveOnly;
+	}
+
+	public void setActiveOnly(boolean theActiveOnly) {
+		myActiveOnly = theActiveOnly;
+	}
+
+	public boolean isExcludeNested() {
+		return myExcludeNested;
+	}
+
+	public void setExcludeNested(boolean theExcludeNested) {
+		myExcludeNested = theExcludeNested;
+	}
+
+	public boolean isIncludeDesignations() {
+		return myIncludeDesignations;
+	}
+
+	public void setIncludeDesignations(boolean theIncludeDesignations) {
+		myIncludeDesignations = theIncludeDesignations;
+	}
+
 	public static ValueSetExpansionOptions forOffsetAndCount(int theOffset, int theCount) {
 		return new ValueSetExpansionOptions().setOffset(theOffset).setCount(theCount);
 	}
@@ -138,6 +165,9 @@ public class ValueSetExpansionOptions {
 				&& myCount == that.myCount
 				&& myOffset == that.myOffset
 				&& myIncludeHierarchy == that.myIncludeHierarchy
+				&& myActiveOnly == that.myActiveOnly
+				&& myExcludeNested == that.myExcludeNested
+				&& myIncludeDesignations == that.myIncludeDesignations
 				&& Objects.equals(myFilter, that.myFilter)
 				&& Objects.equals(myDisplayLanguage, that.myDisplayLanguage);
 	}
@@ -145,6 +175,6 @@ public class ValueSetExpansionOptions {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-				myFailOnMissingCodeSystem, myCount, myOffset, myIncludeHierarchy, myFilter, myDisplayLanguage);
+				myFailOnMissingCodeSystem, myCount, myOffset, myIncludeHierarchy, myActiveOnly, myExcludeNested, myIncludeDesignations, myFilter, myDisplayLanguage);
 	}
 }

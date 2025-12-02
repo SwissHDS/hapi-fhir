@@ -46,6 +46,9 @@ public interface IFhirResourceDaoValueSet<T extends IBaseResource> extends IFhir
 			IPrimitiveType<Integer> theCount,
 			IPrimitiveType<String> theDisplayLanguage,
 			IPrimitiveType<Boolean> theIncludeHierarchy,
+			IPrimitiveType<Boolean> theActiveOnly,
+			IPrimitiveType<Boolean> theExcludeNested,
+			IPrimitiveType<Boolean> theIncludeDesignations,
 			RequestDetails theRequestDetails);
 
 	T expandByIdentifier(String theUri, ValueSetExpansionOptions theOptions);

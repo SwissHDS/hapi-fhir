@@ -99,6 +99,9 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 			IPrimitiveType<Integer> theCount,
 			IPrimitiveType<String> theDisplayLanguage,
 			IPrimitiveType<Boolean> theIncludeHierarchy,
+			IPrimitiveType<Boolean> theActiveOnly,
+			IPrimitiveType<Boolean> theExcludeNested,
+			IPrimitiveType<Boolean> theIncludeDesignations,
 			RequestDetails theRequestDetails) {
 		boolean haveId = theId != null && theId.hasIdPart();
 		boolean haveIdentifier = theUrl != null && isNotBlank(theUrl.getValue());
@@ -148,7 +151,7 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 		}
 
 		ValueSetExpansionOptions options = createValueSetExpansionOptions(
-				myStorageSettings, theOffset, theCount, theIncludeHierarchy, theFilter, theDisplayLanguage);
+				myStorageSettings, theOffset, theCount, theIncludeHierarchy, theActiveOnly, theExcludeNested, theIncludeDesignations, theFilter, theDisplayLanguage);
 
 		IValidationSupport.ValueSetExpansionOutcome outcome;
 		if (haveId) {
