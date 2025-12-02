@@ -306,6 +306,9 @@ public class JpaConstants {
 	 * Parameter for the $expand operation
 	 */
 	public static final String OPERATION_EXPAND_PARAM_INCLUDE_HIERARCHY = "includeHierarchy";
+	public static final String OPERATION_EXPAND_PARAM_ACTIVE_ONLY = "activeOnly";
+	public static final String OPERATION_EXPAND_PARAM_EXCLUDE_NESTED = "excludeNested";
+	public static final String OPERATION_EXPAND_PARAM_INCLUDE_DESIGNATIONS = "includeDesignations";
 
 	public static final String OPERATION_EXPAND_PARAM_DISPLAY_LANGUAGE = "displayLanguage";
 	public static final String HEADER_UPSERT_EXISTENCE_CHECK = "X-Upsert-Extistence-Check";
