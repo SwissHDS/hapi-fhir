@@ -1,6 +1,7 @@
 package org.hl7.fhir.common.hapi.validation.support;
 
 import ca.uhn.fhir.util.FhirVersionIndependentConcept;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r5.model.CodeSystem;
 import org.hl7.fhir.r5.model.ValueSet;
 
@@ -67,26 +68,20 @@ public class ValueSetExpansionFilterContext {
 			boolean onCode = theFilterProperty.equals("concept") || theFilterProperty.equals("code");
 			boolean onDisplay = theFilterProperty.equals("display");
 
-			/**
-			 * Only code/display supported in the in-memory validation support, so reject any custom concept properties,
-			 * even though that should technically be supported by the FHIR spec.
-			 *
-			 * @see <a href="https://build.fhir.org/codesystem.html#properties">
-			 *      FHIR CodeSystem Concept Properties (4.8.11)</a>
-			 * @see <a href="https://build.fhir.org/codesystem.html#defined-props">
-			 *      FHIR CodeSystem Defined Concept Properties (4.8.12)</a>
-			 */
-			if (!onCode && !onDisplay) {
-				return false;
-			}
-
 			String theFilterValue = filter.getValue();
 			String theConceptCode = concept.getCode();
 			String theConceptPropertyValue = onCode
 					? concept.getCode()
-					: propertyIndex
-							.getOrDefault("display", Collections.emptyMap())
-							.get(theConceptCode);
+					: onDisplay
+							? propertyIndex
+									.getOrDefault("display", Collections.emptyMap())
+									.get(theConceptCode)
+							: concept.getProperty().stream()
+									.filter(property -> property.getCode().equals(theFilterProperty)
+											&& property.getValue() instanceof IPrimitiveType<?>)
+									.findAny()
+									.map(property -> ((IPrimitiveType<?>) property.getValue()).getValueAsString())
+									.orElse(null);
 
 			switch (filter.getOp()) {
 				case EQUAL:
