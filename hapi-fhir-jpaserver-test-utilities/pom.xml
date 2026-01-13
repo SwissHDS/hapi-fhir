@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>ca.uhn.hapi.fhir</groupId>
 		<artifactId>hapi-deployable-pom</artifactId>
-		<version>8.9.3-SNAPSHOT</version>
+		<version>8.7.0-LOCAL</version>
 
 		<relativePath>../hapi-deployable-pom/pom.xml</relativePath>
 	</parent>
@@ -130,13 +130,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
-			<!-- Oracle 21	-->
 			<artifactId>testcontainers-oracle-xe</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<!-- Oracle 23	-->
-			<artifactId>testcontainers-oracle-free</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -149,7 +143,7 @@
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc11</artifactId>
-			<version>23.6.0.24.10</version>
+			<version>21.5.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
