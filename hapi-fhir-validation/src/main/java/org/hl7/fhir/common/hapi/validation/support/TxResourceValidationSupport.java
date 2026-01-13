@@ -33,21 +33,25 @@ public class TxResourceValidationSupport implements IValidationSupport {
 	@Override
 	public @Nullable IBaseResource fetchValueSet(String theValueSetUrl) {
 		var txResources = ourTxResourceThreadLocal.get();
-		return txResources.stream()
-				.filter(resource ->
-						resource instanceof ValueSet vs && vs.getUrl().equals(theValueSetUrl))
-				.findFirst()
-				.orElse(null);
+		return txResources == null
+				? null
+				: txResources.stream()
+						.filter(resource ->
+								resource instanceof ValueSet vs && vs.getUrl().equals(theValueSetUrl))
+						.findFirst()
+						.orElse(null);
 	}
 
 	@Override
 	public @Nullable IBaseResource fetchCodeSystem(String theSystem) {
 		var txResources = ourTxResourceThreadLocal.get();
-		return txResources.stream()
-				.filter(resource ->
-						resource instanceof CodeSystem cs && cs.getUrl().equals(theSystem))
-				.findFirst()
-				.orElse(null);
+		return txResources == null
+				? null
+				: txResources.stream()
+						.filter(resource ->
+								resource instanceof CodeSystem cs && cs.getUrl().equals(theSystem))
+						.findFirst()
+						.orElse(null);
 	}
 
 	public void setTxResourceForCurrentRequest(List<IBaseResource> theTxResources) {
