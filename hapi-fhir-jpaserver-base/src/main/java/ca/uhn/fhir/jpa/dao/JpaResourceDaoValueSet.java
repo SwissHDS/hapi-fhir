@@ -151,7 +151,15 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 		}
 
 		ValueSetExpansionOptions options = createValueSetExpansionOptions(
-				myStorageSettings, theOffset, theCount, theIncludeHierarchy, theActiveOnly, theExcludeNested, theIncludeDesignations, theFilter, theDisplayLanguage);
+				myStorageSettings,
+				theOffset,
+				theCount,
+				theIncludeHierarchy,
+				theActiveOnly,
+				theExcludeNested,
+				theIncludeDesignations,
+				theFilter,
+				theDisplayLanguage);
 
 		IValidationSupport.ValueSetExpansionOutcome outcome;
 		if (haveId) {

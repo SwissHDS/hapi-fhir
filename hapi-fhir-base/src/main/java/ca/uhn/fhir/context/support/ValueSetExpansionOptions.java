@@ -175,6 +175,14 @@ public class ValueSetExpansionOptions {
 	@Override
 	public int hashCode() {
 		return Objects.hash(
-				myFailOnMissingCodeSystem, myCount, myOffset, myIncludeHierarchy, myActiveOnly, myExcludeNested, myIncludeDesignations, myFilter, myDisplayLanguage);
+				myFailOnMissingCodeSystem,
+				myCount,
+				myOffset,
+				myIncludeHierarchy,
+				myActiveOnly,
+				myExcludeNested,
+				myIncludeDesignations,
+				myFilter,
+				myDisplayLanguage);
 	}
 }

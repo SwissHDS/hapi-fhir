@@ -1678,7 +1678,7 @@ public abstract class BaseValueSetHSearchExpansionR4Test extends BaseJpaTest {
 			include.setSystem(CS_URL);
 
 			myTermSvc.expandValueSet(null, vs, myValueSetCodeAccumulator);
-			verify(myValueSetCodeAccumulator, times(9)).includeConceptWithDesignations(anyString(), anyString(), nullable(String.class), anyCollection(), nullable(Long.class), nullable(String.class), nullable(String.class));
+			verify(myValueSetCodeAccumulator, times(9)).includeConceptWithDesignations(anyString(), anyString(), nullable(String.class), anyCollection(), anyCollection(), nullable(Long.class), nullable(String.class), nullable(String.class));
 		}
 
 

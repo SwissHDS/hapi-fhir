@@ -45,4 +45,18 @@ public interface ITermValueSetConceptView {
 	String getDesignationVal();
 
 	String getDesignationLang();
+
+	Long getPropertyPid();
+
+	String getPropertyKey();
+
+	String getPropertyVal();
+
+	byte[] getPropertyValBin();
+
+	TermConceptPropertyTypeEnum getPropertyType();
+
+	String getPropertyCodeSystem();
+
+	String getPropertyDisplay();
 }
