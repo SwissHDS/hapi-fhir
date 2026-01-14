@@ -21,6 +21,7 @@ public class VersionEnumTest {
 
 		version = version.replaceAll("-PRE[0-9]+", "");
 		version = version.replace("-SNAPSHOT", "");
+		version = version.replace("-LOCAL", "");
 
 		String[] parts = version.split("\\.");
 		assertEquals(3, parts.length);
