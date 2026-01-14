@@ -2,10 +2,10 @@ package ca.uhn.fhir.jpa.term;
 
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDesignationDao;
-import ca.uhn.fhir.jpa.dao.data.ITermValueSetDao;
 import ca.uhn.fhir.jpa.entity.TermValueSet;
 import ca.uhn.fhir.jpa.entity.TermValueSetConcept;
 import ca.uhn.fhir.jpa.entity.TermValueSetConceptDesignation;
+import ca.uhn.fhir.util.FhirVersionIndependentConcept;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class ValueSetConceptAccumulatorTest {
 	@Test
 	public void testIncludeConcept() {
 		for (int i = 0; i < 1000; i++) {
-			myAccumulator.includeConcept("sys", "code", "display", null, null, null);
+			myAccumulator.includeConcept(new FhirVersionIndependentConcept("sys", "code", "display"));
 		}
 		verify(myEntityManager, times(1000)).persist(any(TermValueSetConcept.class));
 	}
@@ -78,23 +78,4 @@ public class ValueSetConceptAccumulatorTest {
 		}
 
 	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = {false, true})
-	public void testPersistValueSetConcept_whenSupportLegacyLob(boolean theSupportLegacyLob){
-		final String sourceConceptDirectParentPids = "1 2 3 4 5 6 7";
-		ArgumentCaptor<TermValueSetConcept> captor = ArgumentCaptor.forClass(TermValueSetConcept.class);
-
-		myAccumulator.setSupportLegacyLob(theSupportLegacyLob);
-		myAccumulator.includeConcept("sys", "code", "display", null, sourceConceptDirectParentPids, null);
-
-		verify(myEntityManager, times(1)).persist(captor.capture());
-
-		TermValueSetConcept capturedTermValueSetConcept = captor.getValue();
-
-		assertEquals(theSupportLegacyLob, capturedTermValueSetConcept.hasSourceConceptDirectParentPidsLob());
-		assertEquals(sourceConceptDirectParentPids, capturedTermValueSetConcept.getSourceConceptDirectParentPids());
-
-	}
-
 }

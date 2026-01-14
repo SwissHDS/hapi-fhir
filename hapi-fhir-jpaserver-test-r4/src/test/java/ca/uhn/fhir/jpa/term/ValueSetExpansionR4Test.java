@@ -593,7 +593,6 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 
 		assertEquals(codeSystem.getConcept().size(), expandedValueSet.getExpansion().getTotal());
 		assertEquals(myStorageSettings.getPreExpandValueSetsDefaultOffset(), expandedValueSet.getExpansion().getOffset());
-		assertThat(expandedValueSet.getExpansion().getParameter()).isEmpty();
 
 		assertThat(expandedValueSet.getExpansion().getContains()).hasSize(codeSystem.getConcept().size());
 
@@ -611,7 +610,6 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 
 		assertEquals(codeSystem.getConcept().size(), reexpandedValueSet.getExpansion().getTotal());
 		assertEquals(myStorageSettings.getPreExpandValueSetsDefaultOffset(), reexpandedValueSet.getExpansion().getOffset());
-		assertThat(reexpandedValueSet.getExpansion().getParameter()).isEmpty();
 		assertThat(reexpandedValueSet.getExpansion().getContains()).hasSize(codeSystem.getConcept().size());
 
 		concept = assertExpandedValueSetContainsConcept(reexpandedValueSet, "http://acme.org", "8450-9", "Systolic blood pressure--expiration", 2);

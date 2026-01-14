@@ -143,9 +143,21 @@ public class InMemoryTerminologyServerValidationSupport implements IValidationSu
 			return null;
 		}
 
-		expansionR5.getExpansion().addParameter().setName("activeOnly").setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
-		expansionR5.getExpansion().addParameter().setName("excludeNested").setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
-		expansionR5.getExpansion().addParameter().setName("includeDesignations").setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
+		expansionR5
+				.getExpansion()
+				.addParameter()
+				.setName("activeOnly")
+				.setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
+		expansionR5
+				.getExpansion()
+				.addParameter()
+				.setName("excludeNested")
+				.setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
+		expansionR5
+				.getExpansion()
+				.addParameter()
+				.setName("includeDesignations")
+				.setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
 
 		IBaseResource expansion = myVersionCanonicalizer.valueSetFromValidatorCanonical(expansionR5);
 		return new ValueSetExpansionOutcome(expansion);
@@ -782,13 +794,15 @@ public class InMemoryTerminologyServerValidationSupport implements IValidationSu
 	public void expandValueSetIncludeOrExclude(
 			ValidationSupportContext theValidationSupportContext,
 			Consumer<FhirVersionIndependentConcept> theConsumer,
-			org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent theIncludeOrExclude)
+			org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent theIncludeOrExclude,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<org.hl7.fhir.r5.model.ValueSet> theUsedValueSets)
 			throws ExpansionCouldNotBeCompletedInternallyException {
 		expandValueSetR5IncludeOrExclude(
 				theValidationSupportContext,
 				theConsumer,
-				new HashSet<>(),
-				new HashSet<>(),
+				theUsedCodeSystems,
+				theUsedValueSets,
 				null,
 				null,
 				theIncludeOrExclude,

@@ -22,12 +22,17 @@ package ca.uhn.fhir.jpa.term;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.jpa.entity.TermConceptDesignation;
+import ca.uhn.fhir.jpa.entity.TermConceptProperty;
+import ca.uhn.fhir.jpa.entity.TermConceptPropertyTypeEnum;
 import ca.uhn.fhir.jpa.term.ex.ExpansionTooCostlyException;
 import ca.uhn.fhir.model.api.annotation.Block;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.util.FhirVersionIndependentConcept;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.instance.model.api.IBaseBooleanDatatype;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.ValueSet;
 
 import java.util.ArrayList;
@@ -37,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -97,13 +103,7 @@ public class ValueSetExpansionComponentWithConceptAccumulator extends ValueSet.V
 	}
 
 	@Override
-	public void includeConcept(
-			String theSystem,
-			String theCode,
-			String theDisplay,
-			Long theSourceConceptPid,
-			String theSourceConceptDirectParentPids,
-			String theCodeSystemVersion) {
+	public void includeConcept(FhirVersionIndependentConcept theConcept) {
 		if (mySkipCountRemaining > 0) {
 			mySkipCountRemaining--;
 			return;
@@ -112,10 +112,52 @@ public class ValueSetExpansionComponentWithConceptAccumulator extends ValueSet.V
 		incrementConceptsCount();
 
 		ValueSet.ValueSetExpansionContainsComponent contains = this.addContains();
-		setSystemAndVersion(theSystem, contains);
-		contains.setCode(theCode);
-		contains.setDisplay(theDisplay);
-		contains.setVersion(theCodeSystemVersion);
+		setSystemAndVersion(theConcept.getSystem(), contains);
+		contains.setCode(theConcept.getCode());
+		contains.setDisplay(theConcept.getDisplay());
+		contains.setVersion(theConcept.getSystemVersion());
+		if (theConcept.getProperty() != null) {
+			if (isInactiveConcept(theConcept.getProperty())) {
+				contains.setInactive(true);
+			}
+			if (isAbstractConcept(theConcept.getProperty())) {
+				contains.setAbstract(true);
+			}
+		}
+	}
+
+	private FhirVersionIndependentConcept.ConceptPropertyComponent findPropertyByCode(
+			Collection<FhirVersionIndependentConcept.ConceptPropertyComponent> theProperties, String theCode) {
+		for (var next : theProperties) {
+			if (Objects.equals(next.getCode(), theCode)) {
+				return next;
+			}
+		}
+		return null;
+	}
+
+	private boolean isAbstractConcept(
+			Collection<FhirVersionIndependentConcept.ConceptPropertyComponent> theProperties) {
+		var notSelectableProperty = findPropertyByCode(theProperties, "notSelectable");
+		var abstractProperty = findPropertyByCode(theProperties, "abstract");
+		return (notSelectableProperty != null
+						&& notSelectableProperty.getValue() instanceof IBaseBooleanDatatype n
+						&& n.getValue())
+				|| (abstractProperty != null
+						&& abstractProperty.getValue() instanceof IBaseBooleanDatatype a
+						&& a.getValue());
+	}
+
+	private boolean isInactiveConcept(
+			Collection<FhirVersionIndependentConcept.ConceptPropertyComponent> theProperties) {
+		var inactiveProperty = findPropertyByCode(theProperties, "inactive");
+		var statusProperty = findPropertyByCode(theProperties, "status");
+		return (inactiveProperty != null
+						&& inactiveProperty.getValue() instanceof IBaseBooleanDatatype i
+						&& i.getValue())
+				|| (statusProperty != null
+						&& statusProperty.getValue() instanceof IPrimitiveType<?> s
+						&& List.of("retired", "inactive").contains(s.getValueAsString()));
 	}
 
 	@Override
@@ -124,6 +166,7 @@ public class ValueSetExpansionComponentWithConceptAccumulator extends ValueSet.V
 			String theCode,
 			String theDisplay,
 			Collection<TermConceptDesignation> theDesignations,
+			Collection<TermConceptProperty> theProperties,
 			Long theSourceConceptPid,
 			String theSourceConceptDirectParentPids,
 			String theCodeSystemVersion) {
@@ -160,6 +203,24 @@ public class ValueSetExpansionComponentWithConceptAccumulator extends ValueSet.V
 						.setSystem(termConceptDesignation.getUseSystem())
 						.setCode(termConceptDesignation.getUseCode())
 						.setDisplay(termConceptDesignation.getUseDisplay());
+			}
+		}
+
+		if (theProperties != null) {
+			for (var property : theProperties) {
+				if ("notSelectable".equals(property.getKey())
+						&& "true".equals(property.getValue())
+						&& TermConceptPropertyTypeEnum.BOOLEAN.equals(property.getType())) {
+					contains.setAbstract(true);
+				}
+				if ("inactive".equals(property.getKey()) && "true".equals(property.getValue())) {
+					contains.setInactive(true);
+				}
+				if ("status".equals(property.getKey())
+						&& "retired".equals(property.getValue())
+						&& TermConceptPropertyTypeEnum.STRING.equals(property.getType())) {
+					contains.setInactive(true);
+				}
 			}
 		}
 	}
