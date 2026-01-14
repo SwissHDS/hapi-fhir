@@ -20,6 +20,8 @@
 package ca.uhn.fhir.jpa.term;
 
 import ca.uhn.fhir.jpa.entity.TermConceptDesignation;
+import ca.uhn.fhir.jpa.entity.TermConceptProperty;
+import ca.uhn.fhir.util.FhirVersionIndependentConcept;
 import jakarta.annotation.Nullable;
 
 import java.util.Collection;
@@ -28,19 +30,14 @@ public interface IValueSetConceptAccumulator {
 
 	void addMessage(String theMessage);
 
-	void includeConcept(
-			String theSystem,
-			String theCode,
-			String theDisplay,
-			Long theSourceConceptPid,
-			String theSourceConceptDirectParentPids,
-			@Nullable String theSystemVersion);
+	void includeConcept(FhirVersionIndependentConcept theConcept);
 
 	void includeConceptWithDesignations(
 			String theSystem,
 			String theCode,
 			String theDisplay,
 			@Nullable Collection<TermConceptDesignation> theDesignations,
+			@Nullable Collection<TermConceptProperty> theProperties,
 			Long theSourceConceptPid,
 			String theSourceConceptDirectParentPids,
 			@Nullable String theSystemVersion);

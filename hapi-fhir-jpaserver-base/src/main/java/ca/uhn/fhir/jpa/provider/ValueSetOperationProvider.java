@@ -123,23 +123,23 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 							typeName = "boolean")
 					IPrimitiveType<Boolean> theIncludeHierarchy,
 			@OperationParam(
-				name = JpaConstants.OPERATION_EXPAND_PARAM_ACTIVE_ONLY,
-				min = 0,
-				max = 1,
-				typeName = "boolean")
-			IPrimitiveType<Boolean> theActiveOnly,
+							name = JpaConstants.OPERATION_EXPAND_PARAM_ACTIVE_ONLY,
+							min = 0,
+							max = 1,
+							typeName = "boolean")
+					IPrimitiveType<Boolean> theActiveOnly,
 			@OperationParam(
-				name = JpaConstants.OPERATION_EXPAND_PARAM_EXCLUDE_NESTED,
-				min = 0,
-				max = 1,
-				typeName = "boolean")
-			IPrimitiveType<Boolean> theExcludeNested,
+							name = JpaConstants.OPERATION_EXPAND_PARAM_EXCLUDE_NESTED,
+							min = 0,
+							max = 1,
+							typeName = "boolean")
+					IPrimitiveType<Boolean> theExcludeNested,
 			@OperationParam(
-				name = JpaConstants.OPERATION_EXPAND_PARAM_INCLUDE_DESIGNATIONS,
-				min = 0,
-				max = 1,
-				typeName = "boolean")
-			IPrimitiveType<Boolean> theIncludeDesignations,
+							name = JpaConstants.OPERATION_EXPAND_PARAM_INCLUDE_DESIGNATIONS,
+							min = 0,
+							max = 1,
+							typeName = "boolean")
+					IPrimitiveType<Boolean> theIncludeDesignations,
 			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 

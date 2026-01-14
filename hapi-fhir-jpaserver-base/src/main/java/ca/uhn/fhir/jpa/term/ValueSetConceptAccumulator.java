@@ -22,14 +22,24 @@ package ca.uhn.fhir.jpa.term;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDesignationDao;
 import ca.uhn.fhir.jpa.entity.TermConceptDesignation;
+import ca.uhn.fhir.jpa.entity.TermConceptProperty;
+import ca.uhn.fhir.jpa.entity.TermConceptPropertyTypeEnum;
 import ca.uhn.fhir.jpa.entity.TermValueSet;
 import ca.uhn.fhir.jpa.entity.TermValueSetConcept;
 import ca.uhn.fhir.jpa.entity.TermValueSetConceptDesignation;
+import ca.uhn.fhir.jpa.entity.TermValueSetConceptProperty;
+import ca.uhn.fhir.model.api.IPrimitiveDatatype;
+import ca.uhn.fhir.util.FhirVersionIndependentConcept;
 import ca.uhn.fhir.util.ValidateUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityManager;
+import org.hl7.fhir.instance.model.api.IBaseBooleanDatatype;
+import org.hl7.fhir.instance.model.api.IBaseCoding;
+import org.hl7.fhir.instance.model.api.IBaseDecimalDatatype;
+import org.hl7.fhir.instance.model.api.IBaseIntegerDatatype;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +56,7 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 	private final ITermValueSetConceptDesignationDao myValueSetConceptDesignationDao;
 	private int myConceptsSaved;
 	private int myDesignationsSaved;
+	private int myPropertiesSaved;
 	private int myConceptsExcluded;
 
 	private boolean mySupportLegacyLob = false;
@@ -61,6 +72,7 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 		myValueSetConceptDesignationDao = theValueSetConceptDesignationDao;
 		myConceptsSaved = 0;
 		myDesignationsSaved = 0;
+		myPropertiesSaved = 0;
 		myConceptsExcluded = 0;
 	}
 
@@ -71,20 +83,45 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 	}
 
 	@Override
-	public void includeConcept(
-			String theSystem,
-			String theCode,
-			String theDisplay,
-			Long theSourceConceptPid,
-			String theSourceConceptDirectParentPids,
-			String theSystemVersion) {
-		saveConcept(
-				theSystem,
-				theCode,
-				theDisplay,
-				theSourceConceptPid,
-				theSourceConceptDirectParentPids,
-				theSystemVersion);
+	public void includeConcept(FhirVersionIndependentConcept theConcept) {
+		var concept = saveConcept(
+				theConcept.getSystem(),
+				theConcept.getCode(),
+				theConcept.getDisplay(),
+				null,
+				null,
+				theConcept.getSystemVersion());
+		for (var next : theConcept.getProperty()) {
+			var property = new TermConceptProperty();
+			property.setKey(next.getCode());
+			if (next.getValue() instanceof IBaseBooleanDatatype value) {
+				property.setType(TermConceptPropertyTypeEnum.BOOLEAN);
+				property.setValue(value.getValueAsString());
+			} else if (next.getValue() instanceof IBaseIntegerDatatype value) {
+				property.setType(TermConceptPropertyTypeEnum.INTEGER);
+				property.setValue(value.getValueAsString());
+			} else if (next.getValue() instanceof IBaseDecimalDatatype value) {
+				property.setType(TermConceptPropertyTypeEnum.DECIMAL);
+				property.setValue(value.getValueAsString());
+			} else if (next.getValue() instanceof IPrimitiveDatatype<?> value) {
+				if (value.getValue() instanceof String) {
+					property.setType(TermConceptPropertyTypeEnum.STRING);
+				} else if (value.getValue() instanceof Date) {
+					property.setType(TermConceptPropertyTypeEnum.DATETIME);
+				}
+				property.setValue(value.getValueAsString());
+			} else if (next.getValue() instanceof IBaseCoding value) {
+				property.setType(TermConceptPropertyTypeEnum.CODING);
+				property.setCodeSystem(value.getSystem());
+				property.setValue(value.getCode());
+				property.setDisplay(value.getDisplay());
+			} else if (next.getValue() != null) {
+				ourLog.warn("Don't know how to handle properties of type: "
+					+ next.getValue().getClass());
+				continue;
+			}
+			saveConceptProperty(concept, property);
+		}
 	}
 
 	@Override
@@ -93,6 +130,7 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 			String theCode,
 			String theDisplay,
 			Collection<TermConceptDesignation> theDesignations,
+			Collection<TermConceptProperty> theProperties,
 			Long theSourceConceptPid,
 			String theSourceConceptDirectParentPids,
 			String theSystemVersion) {
@@ -106,6 +144,11 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 		if (theDesignations != null) {
 			for (TermConceptDesignation designation : theDesignations) {
 				saveConceptDesignation(concept, designation);
+			}
+		}
+		if (theProperties != null) {
+			for (TermConceptProperty property : theProperties) {
+				saveConceptProperty(concept, property);
 			}
 		}
 	}
@@ -230,6 +273,34 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 		}
 
 		return designation;
+	}
+
+	private void saveConceptProperty(
+		TermValueSetConcept theConcept, TermConceptProperty theProperty) {
+		ValidateUtil.isNotBlankOrThrowInvalidRequest(
+			theProperty.getValue(), "ValueSet contains a concept property with no value");
+
+		var designation = new TermValueSetConceptProperty();
+		designation.setConcept(theConcept);
+		designation.setValueSet(myTermValueSet);
+		designation.setKey(theProperty.getKey());
+		if (theProperty.hasValueBin()) {
+			designation.setValueBin(theProperty.getValueBinAsString());
+		} else {
+			designation.setValue(theProperty.getValue());
+		}
+		designation.setDisplay(theProperty.getDisplay());
+		designation.setType(theProperty.getType());
+		myEntityManager.persist(designation);
+
+		if (++myPropertiesSaved % 250 == 0) {
+			ourLog.debug(
+				"Have pre-expanded {} properties for Concept[{}|{}] in ValueSet[{}]",
+				myPropertiesSaved,
+				theConcept.getSystem(),
+				theConcept.getCode(),
+				myTermValueSet.getUrl());
+		}
 	}
 
 	public Boolean removeGapsFromConceptOrder() {

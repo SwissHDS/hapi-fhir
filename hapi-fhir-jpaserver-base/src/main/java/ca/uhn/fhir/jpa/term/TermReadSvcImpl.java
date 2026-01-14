@@ -119,6 +119,7 @@ import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerVali
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.context.ConversionContext40_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
+import org.hl7.fhir.convertors.conv40_50.resources40_50.CodeSystem40_50;
 import org.hl7.fhir.convertors.conv40_50.resources40_50.ValueSet40_50;
 import org.hl7.fhir.instance.model.api.IAnyResource;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
@@ -138,6 +139,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.IntegerType;
 import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.UriType;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.hl7.fhir.r4.model.codesystems.ConceptSubsumptionOutcome;
 import org.quartz.JobExecutionContext;
@@ -324,6 +326,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		}
 
 		Collection<TermConceptDesignation> designations = theConcept.getDesignations();
+		Collection<TermConceptProperty> properties = theConcept.getProperties();
 
 		if (StringUtils.isNotEmpty(theValueSetIncludeVersion)) {
 			codeSystem = codeSystem + OUR_PIPE_CHARACTER + theValueSetIncludeVersion;
@@ -333,6 +336,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				theValueSetCodeAccumulator,
 				theAddedCodes,
 				designations,
+				properties,
 				theAdd,
 				codeSystem,
 				code,
@@ -352,7 +356,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			String theDisplay,
 			Long theSourceConceptPid,
 			String theSourceConceptDirectParentPids,
-			Collection<TermConceptDesignation> theDesignations) {
+			Collection<TermConceptDesignation> theDesignations,
+			Collection<TermConceptProperty> theProperties) {
 		if (StringUtils.isNotEmpty(theCodeSystemVersion)) {
 			if (isNoneBlank(theCodeSystem, theCode)) {
 				if (theAdd && theAddedCodes.add(theCodeSystem + OUR_PIPE_CHARACTER + theCode)) {
@@ -361,6 +366,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 							theCode,
 							theDisplay,
 							theDesignations,
+							theProperties,
 							theSourceConceptPid,
 							theSourceConceptDirectParentPids,
 							theCodeSystemVersion);
@@ -380,6 +386,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						theCode,
 						theDisplay,
 						theDesignations,
+						theProperties,
 						theSourceConceptPid,
 						theSourceConceptDirectParentPids,
 						theCodeSystemVersion);
@@ -399,6 +406,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			IValueSetConceptAccumulator theValueSetCodeAccumulator,
 			Set<String> theAddedCodes,
 			Collection<TermConceptDesignation> theDesignations,
+			Collection<TermConceptProperty> theProperties,
 			boolean theAdd,
 			String theCodeSystem,
 			String theCode,
@@ -413,6 +421,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						theCode,
 						theDisplay,
 						theDesignations,
+						theProperties,
 						theSourceConceptPid,
 						theSourceConceptDirectParentPids,
 						theSystemVersion);
@@ -550,12 +559,17 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			accumulator.addParameter().setName("count").setValue(new IntegerType(count));
 		}
 
+		HashSet<CodeSystem> usedCodeSystems = new HashSet<>();
+		HashSet<ValueSet> usedValueSets = new HashSet<>();
 		myTxTemplate.executeWithoutResult(tx -> expandValueSetIntoAccumulator(
-				theValueSetToExpand, theExpansionOptions, accumulator, theFilter, true, addedCodes));
-
-		if (accumulator.getTotalConcepts() != null) {
-			accumulator.setTotal(accumulator.getTotalConcepts());
-		}
+				theValueSetToExpand,
+				theExpansionOptions,
+				accumulator,
+				usedCodeSystems,
+				usedValueSets,
+				theFilter,
+				true,
+				addedCodes));
 
 		ValueSet valueSet = new ValueSet();
 		valueSet.setIdElement(theValueSetToExpand.getIdElement());
@@ -577,8 +591,38 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					.setValue(new StringType(next));
 		}
 
+		var inactiveElement = theValueSetToExpand.getCompose().getInactiveElement();
+		var excludeInactiveConcepts =
+				inactiveElement != null && inactiveElement.getValue() != null && !inactiveElement.booleanValue();
+		int removedConcepts = 0;
+		if (excludeInactiveConcepts) {
+			var originalSize = accumulator.getContains().size();
+			accumulator.getContains().removeIf(ValueSet.ValueSetExpansionContainsComponent::getInactive);
+			removedConcepts = originalSize - accumulator.getContains().size();
+		}
+
+		if (accumulator.getTotalConcepts() != null) {
+			// TODO this does not correctly factor in inactive concepts outside the current page
+			accumulator.setTotal(accumulator.getTotalConcepts() - removedConcepts);
+		}
+
 		if (expansionOptions.isIncludeHierarchy()) {
 			accumulator.applyHierarchy();
+		}
+
+		for (CodeSystem usedCodeSystem : usedCodeSystems) {
+			valueSet.getExpansion()
+					.addParameter()
+					.setName("used-codesystem")
+					.setValue(new UriType(usedCodeSystem.getUrl()
+							+ (usedCodeSystem.hasVersion() ? "|" + usedCodeSystem.getVersion() : "")));
+		}
+		for (ValueSet usedValueSet : usedValueSets) {
+			valueSet.getExpansion()
+					.addParameter()
+					.setName("used-valueset")
+					.setValue(new UriType(usedValueSet.getUrl()
+							+ (usedValueSet.hasVersion() ? "|" + usedValueSet.getVersion() : "")));
 		}
 
 		return valueSet;
@@ -588,6 +632,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			ValueSet theValueSetToExpand,
 			ValueSetExpansionOptions theExpansionOptions,
 			IValueSetConceptAccumulator theAccumulator,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<ValueSet> theUsedValueSets,
 			ExpansionFilter theFilter,
 			boolean theAdd,
 			Set<String> theAddedCodes) {
@@ -617,7 +663,14 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 							"valueSetExpandedUsingInMemoryExpansion",
 							getValueSetInfo(theValueSetToExpand));
 			theAccumulator.addMessage(msg);
-			doExpandValueSet(theExpansionOptions, theValueSetToExpand, theAccumulator, theFilter, theAddedCodes);
+			doExpandValueSet(
+					theExpansionOptions,
+					theValueSetToExpand,
+					theAccumulator,
+					theUsedCodeSystems,
+					theUsedValueSets,
+					theFilter,
+					theAddedCodes);
 			return;
 		}
 
@@ -635,7 +688,14 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 							termValueSet.getExpansionStatus().name(),
 							termValueSet.getExpansionStatus().getDescription());
 			theAccumulator.addMessage(msg);
-			doExpandValueSet(theExpansionOptions, theValueSetToExpand, theAccumulator, theFilter, theAddedCodes);
+			doExpandValueSet(
+					theExpansionOptions,
+					theValueSetToExpand,
+					theAccumulator,
+					theUsedCodeSystems,
+					theUsedValueSets,
+					theFilter,
+					theAddedCodes);
 			return;
 		}
 
@@ -729,6 +789,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 
 		Map<Long, FhirVersionIndependentConcept> pidToConcept = new LinkedHashMap<>();
 		ArrayListMultimap<Long, TermConceptDesignation> pidToDesignations = ArrayListMultimap.create();
+		ArrayListMultimap<Long, TermConceptProperty> pidToProperties = ArrayListMultimap.create();
 		Map<Long, Long> pidToSourcePid = new HashMap<>();
 		Map<Long, String> pidToSourceDirectParentPids = new HashMap<>();
 
@@ -771,6 +832,17 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				}
 			}
 
+			if (conceptView.getPropertyPid() != null) {
+				TermConceptProperty property = new TermConceptProperty();
+				property.setKey(conceptView.getPropertyKey());
+				property.setValue(conceptView.getPropertyVal());
+				property.setValueBin(conceptView.getPropertyValBin());
+				property.setType(conceptView.getPropertyType());
+				property.setCodeSystem(conceptView.getPropertyCodeSystem());
+				property.setDisplay(conceptView.getPropertyDisplay());
+				pidToProperties.put(conceptPid, property);
+			}
+
 			if (theAccumulator.isTrackingHierarchy()) {
 				pidToSourcePid.put(conceptPid, conceptView.getSourceConceptPid());
 				pidToSourceDirectParentPids.put(conceptPid, conceptView.getSourceConceptDirectParentPids());
@@ -784,6 +856,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		for (Long nextPid : pidToConcept.keySet()) {
 			FhirVersionIndependentConcept concept = pidToConcept.get(nextPid);
 			List<TermConceptDesignation> designations = pidToDesignations.get(nextPid);
+			List<TermConceptProperty> properties = pidToProperties.get(nextPid);
 			String system = concept.getSystem();
 			String code = concept.getCode();
 			String display = concept.getDisplay();
@@ -804,6 +877,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 							code,
 							display,
 							designations,
+							properties,
 							sourceConceptPid,
 							sourceConceptDirectParentPids,
 							systemVersion);
@@ -888,6 +962,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				theExpansionOptions,
 				theValueSetToExpand,
 				theValueSetCodeAccumulator,
+				new HashSet<>(),
+				new HashSet<>(),
 				ExpansionFilter.NO_FILTER,
 				addedCodes);
 	}
@@ -900,6 +976,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			ValueSetExpansionOptions theExpansionOptions,
 			ValueSet theValueSetToExpand,
 			IValueSetConceptAccumulator theValueSetCodeAccumulator,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<ValueSet> theUsedValueSets,
 			@Nonnull ExpansionFilter theExpansionFilter,
 			Set<String> theAddedCodes) {
 
@@ -923,7 +1001,14 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		for (ValueSet.ConceptSetComponent include :
 				theValueSetToExpand.getCompose().getInclude()) {
 			myTxTemplate.executeWithoutResult(tx -> expandValueSetHandleIncludeOrExclude(
-					theExpansionOptions, theValueSetCodeAccumulator, theAddedCodes, include, true, theExpansionFilter));
+					theExpansionOptions,
+					theValueSetCodeAccumulator,
+					theAddedCodes,
+					include,
+					true,
+					theUsedCodeSystems,
+					theUsedValueSets,
+					theExpansionFilter));
 		}
 
 		// Handle excludes
@@ -936,6 +1021,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					theAddedCodes,
 					exclude,
 					false,
+					theUsedCodeSystems,
+					theUsedValueSets,
 					ExpansionFilter.NO_FILTER));
 		}
 
@@ -974,6 +1061,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			Set<String> theAddedCodes,
 			ValueSet.ConceptSetComponent theIncludeOrExclude,
 			boolean theAdd,
+			Set<CodeSystem> theUsedCodeSystems,
+			Set<ValueSet> theUsedValueSets,
 			@Nonnull ExpansionFilter theExpansionFilter) {
 
 		String system = theIncludeOrExclude.getSystem();
@@ -990,9 +1079,13 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 
 			ourLog.debug("Starting {} expansion around CodeSystem: {}", (theAdd ? "inclusion" : "exclusion"), system);
 
-			Optional<TermCodeSystemVersion> termCodeSystemVersion =
+			Optional<TermCodeSystemVersion> termCodeSystemVersionOptional =
 					optionalFindTermCodeSystemVersion(theIncludeOrExclude);
-			if (termCodeSystemVersion.isPresent()) {
+			if (termCodeSystemVersionOptional.isPresent()) {
+				TermCodeSystemVersion termCodeSystemVersion = termCodeSystemVersionOptional.get();
+				theUsedCodeSystems.add(new CodeSystem()
+						.setUrl(termCodeSystemVersion.getCodeSystem().getCodeSystemUri())
+						.setVersion(termCodeSystemVersion.getCodeSystemVersionId()));
 
 				expandValueSetHandleIncludeOrExcludeUsingDatabase(
 						theExpansionOptions,
@@ -1002,7 +1095,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						theAdd,
 						theExpansionFilter,
 						system,
-						termCodeSystemVersion.get());
+						termCodeSystemVersion);
 
 			} else {
 
@@ -1015,22 +1108,28 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					}
 				}
 
-				Consumer<FhirVersionIndependentConcept> consumer = c -> addOrRemoveCode(
-						theValueSetCodeAccumulator,
-						theAddedCodes,
-						theAdd,
-						system,
-						c.getCode(),
-						c.getDisplay(),
-						c.getSystemVersion());
+				Consumer<FhirVersionIndependentConcept> consumer =
+						c -> addOrRemoveCode(theValueSetCodeAccumulator, theAddedCodes, theAdd, c);
 
 				try {
 					ConversionContext40_50.INSTANCE.init(
 							new VersionConvertor_40_50(new BaseAdvisor_40_50()), "ValueSet");
 					org.hl7.fhir.r5.model.ValueSet.ConceptSetComponent includeOrExclude =
 							ValueSet40_50.convertConceptSetComponent(theIncludeOrExclude);
+					Set<org.hl7.fhir.r5.model.CodeSystem> usedCodeSystems = new HashSet<>();
+					Set<org.hl7.fhir.r5.model.ValueSet> usedValueSets = new HashSet<>();
 					myInMemoryTerminologyServerValidationSupport.expandValueSetIncludeOrExclude(
-							new ValidationSupportContext(provideValidationSupport()), consumer, includeOrExclude);
+							new ValidationSupportContext(provideValidationSupport()),
+							consumer,
+							includeOrExclude,
+							usedCodeSystems,
+							usedValueSets);
+					usedValueSets.forEach(valueSet -> theUsedValueSets.add(ValueSet40_50.convertValueSet(valueSet)));
+					ConversionContext40_50.INSTANCE.init(
+							new VersionConvertor_40_50(new BaseAdvisor_40_50()), "CodeSystem");
+					usedCodeSystems.forEach(
+							codeSystem -> theUsedCodeSystems.add(CodeSystem40_50.convertCodeSystem(codeSystem)));
+					ConversionContext40_50.INSTANCE.close("CodeSystem");
 				} catch (InMemoryTerminologyServerValidationSupport.ExpansionCouldNotBeCompletedInternallyException e) {
 					if (theExpansionOptions != null
 							&& !theExpansionOptions.isFailOnMissingCodeSystem()
@@ -1071,6 +1170,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						valueSet,
 						theExpansionOptions,
 						theValueSetCodeAccumulator,
+						theUsedCodeSystems,
+						theUsedValueSets,
 						subExpansionFilter,
 						theAdd,
 						theAddedCodes);
@@ -1385,15 +1486,13 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			IValueSetConceptAccumulator theValueSetCodeAccumulator,
 			Set<String> theAddedCodes,
 			boolean theAdd,
-			String theSystem,
-			String theCode,
-			String theDisplay,
-			String theSystemVersion) {
-		if (theAdd && theAddedCodes.add(theSystem + OUR_PIPE_CHARACTER + theCode)) {
-			theValueSetCodeAccumulator.includeConcept(theSystem, theCode, theDisplay, null, null, theSystemVersion);
+			FhirVersionIndependentConcept theConcept) {
+		var code = theConcept.getSystem() + OUR_PIPE_CHARACTER + theConcept.getCode();
+		if (theAdd && theAddedCodes.add(code)) {
+			theValueSetCodeAccumulator.includeConcept(theConcept);
 		}
-		if (!theAdd && theAddedCodes.remove(theSystem + OUR_PIPE_CHARACTER + theCode)) {
-			theValueSetCodeAccumulator.excludeConcept(theSystem, theCode);
+		if (!theAdd && theAddedCodes.remove(code)) {
+			theValueSetCodeAccumulator.excludeConcept(theConcept.getSystem(), theConcept.getCode());
 		}
 	}
 
@@ -1414,39 +1513,39 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					Msg.code(891) + "Invalid filter, must have fields populated: property op value");
 		}
 
-		switch (theFilter.getProperty()) {
-			case "display:exact":
-			case "display":
-				handleFilterDisplay(theF, theB, theFilter);
-				break;
-			case "concept":
-			case "code":
-				handleFilterConceptAndCode(theCodeSystemIdentifier, theF, theB, theFilter);
-				break;
-			case "parent":
-			case "child":
-				isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
-				handleFilterLoincParentChild(theF, theB, theFilter);
-				break;
-			case "ancestor":
-				isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
-				handleFilterLoincAncestor(theCodeSystemIdentifier, theF, theB, theFilter);
-				break;
-			case "descendant":
-				isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
-				handleFilterLoincDescendant(theCodeSystemIdentifier, theF, theB, theFilter);
-				break;
-			case "copyright":
-				isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
-				handleFilterLoincCopyright(theF, theB, theFilter);
-				break;
-			default:
-				if (theFilter.getOp() == ValueSet.FilterOperator.REGEX) {
-					handleFilterRegex(theF, theB, theFilter);
-				} else {
+		if (theFilter.getOp() == ValueSet.FilterOperator.REGEX) {
+			handleFilterRegex(theF, theB, theFilter);
+		} else {
+			switch (theFilter.getProperty()) {
+				case "display:exact":
+				case "display":
+					handleFilterDisplay(theF, theB, theFilter);
+					break;
+				case "concept":
+				case "code":
+					handleFilterConceptAndCode(theCodeSystemIdentifier, theF, theB, theFilter);
+					break;
+				case "parent":
+				case "child":
+					isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
+					handleFilterLoincParentChild(theF, theB, theFilter);
+					break;
+				case "ancestor":
+					isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
+					handleFilterLoincAncestor(theCodeSystemIdentifier, theF, theB, theFilter);
+					break;
+				case "descendant":
+					isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
+					handleFilterLoincDescendant(theCodeSystemIdentifier, theF, theB, theFilter);
+					break;
+				case "copyright":
+					isCodeSystemLoincOrThrowInvalidRequestException(theCodeSystemIdentifier, theFilter.getProperty());
+					handleFilterLoincCopyright(theF, theB, theFilter);
+					break;
+				default:
 					handleFilterPropertyDefault(theF, theB, theFilter);
-				}
-				break;
+					break;
+			}
 		}
 	}
 
@@ -1967,7 +2066,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 						next.getDisplay(),
 						next.getId(),
 						next.getParentPidsAsString(),
-						next.getDesignations());
+						next.getDesignations(),
+						next.getProperties());
 			}
 		}
 
@@ -1993,7 +2093,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					next.getDisplay(),
 					null,
 					null,
-					designations);
+					designations,
+					null);
 		}
 	}
 
@@ -2015,7 +2116,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 					nextChild.getDisplay(),
 					nextChild.getId(),
 					nextChild.getParentPidsAsString(),
-					nextChild.getDesignations());
+					nextChild.getDesignations(),
+					nextChild.getProperties());
 			if (added) {
 				addConceptAndChildren(
 						theValueSetCodeAccumulator, theAddedCodes, theInclude, theSystem, theAdd, nextChild);
@@ -2512,6 +2614,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				txTemplate.executeWithoutResult(t -> {
 					valueSetToExpand.setExpansionStatus(TermValueSetPreExpansionStatusEnum.EXPANDED);
 					valueSetToExpand.setExpansionTimestamp(new Date());
+					// TODO add parameters etc.?
 					myEntityManager.merge(valueSetToExpand);
 				});
 
@@ -3254,9 +3357,21 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			@Nonnull IBaseResource theValueSetToExpand) {
 		ValueSet canonicalInput = myVersionCanonicalizer.valueSetToCanonical(theValueSetToExpand);
 		org.hl7.fhir.r4.model.ValueSet expandedR4 = expandValueSet(theExpansionOptions, canonicalInput);
-		expandedR4.getExpansion().addParameter().setName("activeOnly").setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
-		expandedR4.getExpansion().addParameter().setName("excludeNested").setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
-		expandedR4.getExpansion().addParameter().setName("includeDesignations").setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
+		expandedR4
+				.getExpansion()
+				.addParameter()
+				.setName("activeOnly")
+				.setValue(new BooleanType(theExpansionOptions.isActiveOnly()));
+		expandedR4
+				.getExpansion()
+				.addParameter()
+				.setName("excludeNested")
+				.setValue(new BooleanType(theExpansionOptions.isExcludeNested()));
+		expandedR4
+				.getExpansion()
+				.addParameter()
+				.setName("includeDesignations")
+				.setValue(new BooleanType(theExpansionOptions.isIncludeDesignations()));
 		return new ValueSetExpansionOutcome(myVersionCanonicalizer.valueSetFromCanonical(expandedR4));
 	}
 
