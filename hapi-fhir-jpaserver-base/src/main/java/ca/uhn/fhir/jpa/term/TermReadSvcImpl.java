@@ -621,7 +621,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		}
 
 		if (accumulator.getTotalConcepts() != null) {
-			// TODO this does not correctly factor in inactive concepts outside the current page
+			// This does not correctly factor in inactive concepts outside the current page:
+			// https://github.com/SwissHDS/swiss-hds-terminolgy-provider/issues/21
 			accumulator.setTotal(accumulator.getTotalConcepts() - removedConcepts);
 		}
 
@@ -2705,7 +2706,6 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				txTemplate.executeWithoutResult(t -> {
 					valueSetToExpand.setExpansionStatus(TermValueSetPreExpansionStatusEnum.EXPANDED);
 					valueSetToExpand.setExpansionTimestamp(new Date());
-					// TODO add parameters etc.?
 					myEntityManager.merge(valueSetToExpand);
 				});
 
