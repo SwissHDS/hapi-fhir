@@ -8,7 +8,6 @@ import org.hl7.fhir.r4.model.CodeSystem;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
-import org.hl7.fhir.r4.model.UriType;
 import org.hl7.fhir.r4.model.UrlType;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.junit.jupiter.api.AfterEach;

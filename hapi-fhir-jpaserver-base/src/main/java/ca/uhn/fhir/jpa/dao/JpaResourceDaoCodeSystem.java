@@ -367,7 +367,7 @@ public class JpaResourceDaoCodeSystem<T extends IBaseResource> extends BaseHapiF
 		String codeSystemUrl = createVersionedSystemIfVersionIsPresent(theCodeSystemUrl, theVersion);
 
 		CodeValidationResult retVal =
-				myValidationSupport.validateCode(context, options, codeSystemUrl, theCode, theDisplay, null);
+				myValidationSupport.validateCode(context, options, codeSystemUrl, theCode, theDisplay, null, null);
 		if (retVal == null) {
 			retVal = new CodeValidationResult();
 			retVal.setMessage(

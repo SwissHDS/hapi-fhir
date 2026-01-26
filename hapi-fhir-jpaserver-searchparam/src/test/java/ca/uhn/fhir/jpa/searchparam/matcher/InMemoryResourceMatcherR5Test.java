@@ -202,37 +202,37 @@ public class InMemoryResourceMatcherR5Test {
 	@Test
 	public void testSupportedIn() {
 		IValidationSupport.CodeValidationResult codeValidationResult = new IValidationSupport.CodeValidationResult().setCode(OBSERVATION_CODE);
-		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any())).thenReturn(codeValidationResult);
+		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any(), null)).thenReturn(codeValidationResult);
 
 		InMemoryMatchResult result = myInMemoryResourceMatcher.match("code" + TokenParamModifier.IN.getValue() + "=" + OBSERVATION_CODE_VALUE_SET_URI, myObservation, mySearchParams, newRequest());
 		assertTrue(result.supported());
 		assertTrue(result.matched());
 
-		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI));
+		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI), null);
 	}
 
 	@Test
 	public void testSupportedIn_NoMatch() {
 		IValidationSupport.CodeValidationResult codeValidationResult = new IValidationSupport.CodeValidationResult();
-		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any())).thenReturn(codeValidationResult);
+		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any(), null)).thenReturn(codeValidationResult);
 
 		InMemoryMatchResult result = myInMemoryResourceMatcher.match("code" + TokenParamModifier.IN.getValue() + "=" + OBSERVATION_CODE_VALUE_SET_URI, myObservation, mySearchParams, newRequest());
 		assertTrue(result.supported());
 		assertFalse(result.matched());
 
-		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI));
+		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI), null);
 	}
 
 	@Test
 	public void testSupportedNotIn() {
 		IValidationSupport.CodeValidationResult codeValidationResult = new IValidationSupport.CodeValidationResult();
-		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any())).thenReturn(codeValidationResult);
+		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), any(), null)).thenReturn(codeValidationResult);
 
 		InMemoryMatchResult result = myInMemoryResourceMatcher.match("code" + TokenParamModifier.NOT_IN.getValue() + "=" + OBSERVATION_CODE_VALUE_SET_URI, myObservation, mySearchParams, newRequest());
 		assertTrue(result.supported());
 		assertTrue(result.matched());
 
-		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI));
+		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI), null);
 	}
 
 	@Test
@@ -244,15 +244,15 @@ public class InMemoryResourceMatcherR5Test {
 
 		// mock 2 value sets.  Once containing the code, and one not.
 		String otherValueSet = OBSERVATION_CODE_VALUE_SET_URI + "-different";
-		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), eq(OBSERVATION_CODE_VALUE_SET_URI))).thenReturn(matchResult);
-		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), eq(otherValueSet))).thenReturn(noMatchResult);
+		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), eq(OBSERVATION_CODE_VALUE_SET_URI), null)).thenReturn(matchResult);
+		when(myValidationSupport.validateCode(any(), any(), any(), any(), any(), eq(otherValueSet), null)).thenReturn(noMatchResult);
 
 		String criteria = "code" + TokenParamModifier.NOT_IN.getValue() + "=" + OBSERVATION_CODE_VALUE_SET_URI + "," + otherValueSet;
 		InMemoryMatchResult result = myInMemoryResourceMatcher.match(criteria, myObservation, mySearchParams, newRequest());
 		assertTrue(result.supported());
 		assertThat(result.matched()).as(":not-in matches when NONE of the OR-list match").isFalse();
 
-		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI));
+		verify(myValidationSupport).validateCode(any(), any(), eq(OBSERVATION_CODE_SYSTEM), eq(OBSERVATION_CODE), isNull(), eq(OBSERVATION_CODE_VALUE_SET_URI), null);
   }
   
    @Test

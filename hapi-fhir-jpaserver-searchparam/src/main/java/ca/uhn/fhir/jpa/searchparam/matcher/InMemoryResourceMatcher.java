@@ -625,7 +625,8 @@ public class InMemoryResourceMatcher {
 				theSearchParamToken.getSystem(),
 				theSearchParamToken.getValue(),
 				null,
-				theQueryParam.getValue());
+				theQueryParam.getValue(),
+				null);
 		if (codeValidationResult != null) {
 			return codeValidationResult.isOk();
 		} else {

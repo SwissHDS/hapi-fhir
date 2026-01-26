@@ -84,7 +84,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@Test
 	public void testValidateCode_withUnitsOfMeasureWithKnownCode_returnsValid() {
 		final String code = "mg";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), UCUM_CODESYSTEM_URL, code, null, UCUM_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), UCUM_CODESYSTEM_URL, code, null, UCUM_VALUESET_URL, null);
 		validateCodeResultOk(result, code, "(milligram)");
 	}
 
@@ -122,28 +122,28 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@ParameterizedTest
 	@CsvSource({"en-CA, English (Canada)", "en-US, English (United States)"})
 	public void testValidateCode_withLanguagesWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, theCode, null, LANGUAGES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, theCode, null, LANGUAGES_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
 	@Test
 	public void testValidateCode_withLanguagesWithUnknownCode_returnsInvalid() {
 		final String code = "FOO";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, code, null, LANGUAGES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, code, null, LANGUAGES_VALUESET_URL, null);
 		validateCodeResultError(result, "Code \""+ code +"\" is not in valueset: " + LANGUAGES_VALUESET_URL);
 	}
 
 	@Test
 	public void testValidateCode_withLanguagesWithIncorrectSystem_returnsInvalid() {
 		final String system = "FOO";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, "en-US", null, LANGUAGES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, "en-US", null, LANGUAGES_VALUESET_URL, null);
 		validateCodeResultError(result, "Inappropriate CodeSystem URL \"" + system + "\" for ValueSet: " + LANGUAGES_VALUESET_URL);
 	}
 
 	@ParameterizedTest
 	@CsvSource({"en-CA, English Canada", "en-US, English United States"})
 	public void testValidateCode_withAllLanguagesWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, theCode, null, ALL_LANGUAGES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, theCode, null, ALL_LANGUAGES_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
@@ -151,7 +151,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@Test
 	public void testValidateCode_withAllLanguagesWithUnknownCode_returnsInvalid() {
 		final String code = "FOO";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, code, null, ALL_LANGUAGES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), LANGUAGES_CODESYSTEM_URL, code, null, ALL_LANGUAGES_VALUESET_URL, null);
 		validateCodeResultError(result, "Code \"" + code + "\" is not in valueset: " + ALL_LANGUAGES_VALUESET_URL);
 	}
 
@@ -159,7 +159,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withAllLanguagesWithIncorrectSystem_returnsInvalid() {
 		final String system = "FOO";
 		final String valueSet = ALL_LANGUAGES_VALUESET_URL;
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, "en-US", null, valueSet);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, "en-US", null, valueSet, null);
 		validateCodeResultError(result, "Inappropriate CodeSystem URL \"" + system + "\" for ValueSet: " + valueSet);
 	}
 
@@ -205,14 +205,14 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@ParameterizedTest
 	@CsvSource({"WA, Washington", "PR, Puerto Rico"})
 	public void testValidateCode_withUSPostalWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), USPS_CODESYSTEM_URL, theCode, null, null);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), USPS_CODESYSTEM_URL, theCode, null, null, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
 	@ParameterizedTest
 	@CsvSource({"WA, Washington", "PR, Puerto Rico"})
 	public void testValidateCode_withUSPostalValueSetWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), USPS_CODESYSTEM_URL, theCode, null, USPS_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), USPS_CODESYSTEM_URL, theCode, null, USPS_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
@@ -220,7 +220,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withUSPostalValueSetWithUnknownCode_returnsInvalid() {
 		final String system = USPS_CODESYSTEM_URL;
 		final String code = "FOO";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, code, null, USPS_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, code, null, USPS_VALUESET_URL, null);
 		validateCodeResultError(result, "Unknown code \"" + system + "#" + code + "\"");
 	}
 
@@ -243,14 +243,14 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@ParameterizedTest
 	@CsvSource({"USD, United States dollar", "CAD, Canadian dollar", "EUR, Euro"})
 	public void testValidateCode_withCurrenciesWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), CURRENCIES_CODESYSTEM_URL, theCode, null, null);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), CURRENCIES_CODESYSTEM_URL, theCode, null, null, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
 	@ParameterizedTest
 	@CsvSource({"USD, United States dollar", "CAD, Canadian dollar", "EUR, Euro"})
 	public void testValidateCode_withCurrenciesValueSetWithKnownCode_returnsValid(final String theCode, final String theDisplay) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), CURRENCIES_CODESYSTEM_URL, theCode, null, CURRENCIES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), CURRENCIES_CODESYSTEM_URL, theCode, null, CURRENCIES_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, theDisplay);
 	}
 
@@ -258,7 +258,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withCurrenciesValueSetWithUnknownCode_returnsInvalid() {
 		final String system = CURRENCIES_CODESYSTEM_URL;
 		final String code = "invalidCurrency";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, code, null, CURRENCIES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, code, null, CURRENCIES_VALUESET_URL, null);
 		validateCodeResultError(result, "Unknown code \"" + system + "#" + code + "\"");
 	}
 
@@ -310,14 +310,14 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	@ParameterizedTest
 	@ValueSource(strings = { EncodingEnum.JSON_PLAIN_STRING, Constants.CT_FHIR_JSON_NEW, Constants.CT_FHIR_JSON })
 	public void testValidateCode_withMimetypesValueSetWithStandardCode_returnsValid(String theCode) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, theCode, null, MIMETYPES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, theCode, null, MIMETYPES_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, null);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { EncodingEnum.JSON_PLAIN_STRING, Constants.CT_FHIR_JSON_NEW, Constants.CT_FHIR_JSON })
 	public void testValidateCode_withMimetypesValueSetWithInferSystemWithStandardCode_returnsValid(String theCode) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions().setInferSystem(true), null, theCode, null, MIMETYPES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions().setInferSystem(true), null, theCode, null, MIMETYPES_VALUESET_URL, null);
 		validateCodeResultOk(result, theCode, null);
 	}
 
@@ -325,14 +325,14 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withMimetypesValueSetWithMismatchSystem_returnsInvalid() {
 		final String system = "someSystem";
 		final String valueSet = MIMETYPES_VALUESET_URL;
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, system, null, valueSet);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), system, system, null, valueSet, null);
 		validateCodeResultError(result, "Inappropriate CodeSystem URL \"" + system + "\" for ValueSet: " + valueSet);
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { EncodingEnum.JSON_PLAIN_STRING, Constants.CT_FHIR_JSON_NEW, Constants.CT_FHIR_JSON })
 	public void testValidateCode_withMimetypesWithStandardCode_returnsValid(String theCode) {
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, theCode, null, null);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, theCode, null, null, null);
 		validateCodeResultOk(result, theCode, null);
 	}
 
@@ -340,7 +340,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withMimetypeValueSetWithArbitraryCode_returnsValid() {
 		final String code = "someCode";
 		final String display = "displayValue";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, code, display, MIMETYPES_VALUESET_URL);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, code, display, MIMETYPES_VALUESET_URL, null);
 		validateCodeResultOk(result, code, display);
 	}
 
@@ -348,7 +348,7 @@ public class CommonCodeSystemsTerminologyServiceTest extends BaseValidationTestW
 	public void testValidateCode_withMimetypesWithArbitraryCode_returnsValid() {
 		final String code = "someCode";
 		final String display = "displayValue";
-		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, code, display, null);
+		CodeValidationResult result = mySvc.validateCode(newSupport(), newOptions(), MIMETYPES_CODESYSTEM_URL, code, display, null, null);
 		validateCodeResultOk(result, code, null);
 
 		// the display null in result bug is reported here:  https://github.com/hapifhir/hapi-fhir/issues/5643

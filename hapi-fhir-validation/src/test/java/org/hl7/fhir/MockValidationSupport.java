@@ -89,9 +89,9 @@ public class MockValidationSupport implements IValidationSupport {
 
 	@Nullable
 	@Override
-	public CodeValidationResult validateCode(ValidationSupportContext theValidationSupportContext, ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl) {
+	public CodeValidationResult validateCode(ValidationSupportContext theValidationSupportContext, ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl, IBaseResource theValueSet) {
 		myCountValidateCode++;
-		CodeValidationResult retVal = doValidateCode(theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl);
+		CodeValidationResult retVal = doValidateCode(theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl, theValueSet);
 		ourLog.debug("validateCode({}, {}, {}, {}) : {}", theCodeSystem, theCode, theDisplay, theValueSetUrl, retVal);
 		return retVal;
 	}
@@ -100,13 +100,13 @@ public class MockValidationSupport implements IValidationSupport {
 	@Override
 	public CodeValidationResult validateCodeInValueSet(ValidationSupportContext theValidationSupportContext, ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, @Nonnull IBaseResource theValueSet) {
 		myCountValidateCodeInValueSet++;
-		CodeValidationResult retVal = doValidateCode(theOptions, theCodeSystem, theCode, theDisplay, null);
+		CodeValidationResult retVal = doValidateCode(theOptions, theCodeSystem, theCode, theDisplay, null, theValueSet);
 		ourLog.debug("validateCode({}, {}, {}, {}) : {}", theCodeSystem, theCode, theDisplay, null, retVal);
 		return retVal;
 	}
 
 	@Nullable
-	private CodeValidationResult doValidateCode(ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl) {
+	private CodeValidationResult doValidateCode(ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl, IBaseResource theValueSet) {
 		CodeValidationResult retVal;
 		if (myValidConcepts.contains(theCodeSystem + "___" + theCode)) {
 			retVal = new CodeValidationResult().setCode(theCode);
@@ -119,7 +119,7 @@ public class MockValidationSupport implements IValidationSupport {
 		} else if (myCodeSystems.containsKey(theCodeSystem)) {
 			InMemoryTerminologyServerValidationSupport inMemory = new InMemoryTerminologyServerValidationSupport(myFhirContext);
 			ValidationSupportContext nestedCtx = new ValidationSupportContext(this);
-			retVal = inMemory.validateCode(nestedCtx, theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl);
+			retVal = inMemory.validateCode(nestedCtx, theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl, theValueSet);
 		} else {
 			retVal = null;
 		}

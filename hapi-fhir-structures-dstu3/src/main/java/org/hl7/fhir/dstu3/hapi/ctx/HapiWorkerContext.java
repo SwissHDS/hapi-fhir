@@ -309,6 +309,7 @@ public final class HapiWorkerContext extends I18nBase implements IWorkerContext 
 				theSystem,
 				theCode,
 				theDisplay,
+				null,
 				null);
 		if (result == null) {
 			return null;
@@ -349,7 +350,8 @@ public final class HapiWorkerContext extends I18nBase implements IWorkerContext 
 					theSystem,
 					theCode,
 					theDisplay,
-					theVs.getUrl());
+					theVs.getUrl(),
+					null);
 		} else {
 			outcome = myValidationSupport.validateCodeInValueSet(
 					new ValidationSupportContext(myValidationSupport),

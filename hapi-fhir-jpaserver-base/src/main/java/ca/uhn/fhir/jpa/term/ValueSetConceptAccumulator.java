@@ -117,7 +117,7 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 				property.setDisplay(value.getDisplay());
 			} else if (next.getValue() != null) {
 				ourLog.warn("Don't know how to handle properties of type: "
-					+ next.getValue().getClass());
+						+ next.getValue().getClass());
 				continue;
 			}
 			saveConceptProperty(concept, property);
@@ -275,10 +275,9 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 		return designation;
 	}
 
-	private void saveConceptProperty(
-		TermValueSetConcept theConcept, TermConceptProperty theProperty) {
+	private void saveConceptProperty(TermValueSetConcept theConcept, TermConceptProperty theProperty) {
 		ValidateUtil.isNotBlankOrThrowInvalidRequest(
-			theProperty.getValue(), "ValueSet contains a concept property with no value");
+				theProperty.getValue(), "ValueSet contains a concept property with no value");
 
 		var designation = new TermValueSetConceptProperty();
 		designation.setConcept(theConcept);
@@ -295,11 +294,11 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 
 		if (++myPropertiesSaved % 250 == 0) {
 			ourLog.debug(
-				"Have pre-expanded {} properties for Concept[{}|{}] in ValueSet[{}]",
-				myPropertiesSaved,
-				theConcept.getSystem(),
-				theConcept.getCode(),
-				myTermValueSet.getUrl());
+					"Have pre-expanded {} properties for Concept[{}|{}] in ValueSet[{}]",
+					myPropertiesSaved,
+					theConcept.getSystem(),
+					theConcept.getCode(),
+					myTermValueSet.getUrl());
 		}
 	}
 

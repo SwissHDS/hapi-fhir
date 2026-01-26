@@ -61,5 +61,6 @@ public interface IFhirResourceDaoValueSet<T extends IBaseResource> extends IFhir
 			IPrimitiveType<String> theDisplay,
 			IBaseCoding theCoding,
 			IBaseDatatype theCodeableConcept,
+			IBaseResource theValueSet,
 			RequestDetails theRequestDetails);
 }

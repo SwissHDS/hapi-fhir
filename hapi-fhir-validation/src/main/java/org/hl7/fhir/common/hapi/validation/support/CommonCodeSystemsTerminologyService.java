@@ -102,7 +102,7 @@ public class CommonCodeSystemsTerminologyService implements IValidationSupport {
 			String theDisplay,
 			@Nonnull IBaseResource theValueSet) {
 		String url = getValueSetUrl(getFhirContext(), theValueSet);
-		return validateCode(theValidationSupportContext, theOptions, theCodeSystem, theCode, theDisplay, url);
+		return validateCode(theValidationSupportContext, theOptions, theCodeSystem, theCode, theDisplay, url, null);
 	}
 
 	@Override
@@ -112,7 +112,8 @@ public class CommonCodeSystemsTerminologyService implements IValidationSupport {
 			final String theCodeSystem,
 			final String theCode,
 			final String theDisplay,
-			final String theValueSetUrl) {
+			final String theValueSetUrl,
+			IBaseResource theValueSet) {
 		/* **************************************************************************************
 		 * NOTE: Update validation_support_modules.md if any of the support in this module
 		 * changes in any way!

@@ -4834,20 +4834,20 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 		String csUrl = "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus";
 		String code = "I";
 		String code2 = "A";
-		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl))).isOk());
+		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null))).isOk());
 
 		assertEquals(1, myCaptureQueriesListener.countGetConnections());
 		assertEquals(1, myCaptureQueriesListener.countSelectQueries());
 
 		// Again (should use cache)
 		myCaptureQueriesListener.clear();
-		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl))).isOk());
+		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null))).isOk());
 		assertEquals(0, myCaptureQueriesListener.countGetConnections());
 		assertEquals(0, myCaptureQueriesListener.countSelectQueries());
 
 		// Different code (should use cache)
 		myCaptureQueriesListener.clear();
-		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl))).isOk());
+		assertTrue(requireNonNull(requireNonNull(myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl, null))).isOk());
 		assertEquals(0, myCaptureQueriesListener.countGetConnections());
 		assertEquals(0, myCaptureQueriesListener.countSelectQueries());
 	}
@@ -4879,7 +4879,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 		myCaptureQueriesListener.clear();
 		ValidationSupportContext ctx = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertThat(result.getMessage()).isNull();
@@ -4890,7 +4890,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 
 		// Again (should use cache)
 		myCaptureQueriesListener.clear();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertThat(result.getMessage()).isNull();
@@ -4899,7 +4899,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 
 		// Different code (should use cache)
 		myCaptureQueriesListener.clear();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertEquals(1, myCaptureQueriesListener.countGetConnections());
@@ -4908,7 +4908,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 		// Now pre-expand the VS and try again (should use disk because we're fetching from pre-expansion)
 		myTermSvc.preExpandDeferredValueSetsToTerminologyTables();
 		myCaptureQueriesListener.clear();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertThat(result.getMessage()).contains("expansion that was pre-calculated");
@@ -4917,7 +4917,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 
 		// Same code (should use cache)
 		myCaptureQueriesListener.clear();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertThat(result.getMessage()).contains("expansion that was pre-calculated");
@@ -4926,7 +4926,7 @@ public class FhirResourceDaoR4QueryCountTest extends BaseResourceProviderR4Test 
 
 		// Different code (should use cache)
 		myCaptureQueriesListener.clear();
-		result = myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl);
+		result = myValidationSupport.validateCode(ctx, options, csUrl, code2, null, vsUrl, null);
 		assertNotNull(result);
 		assertTrue(result.isOk());
 		assertThat(result.getMessage()).contains("expansion that was pre-calculated");

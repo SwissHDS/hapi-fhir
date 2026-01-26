@@ -928,7 +928,7 @@ public class WorkerContextValidationSupportAdapter extends I18nBase implements I
 	private IValidationSupport.CodeValidationResult validateCodeInCodeSystem(
 			ConceptValidationOptions theValidationOptions, String theSystem, String theCode, String theDisplay) {
 		return myValidationSupport.validateCode(
-				newValidationSupportContext(), theValidationOptions, theSystem, theCode, theDisplay, null);
+				newValidationSupportContext(), theValidationOptions, theSystem, theCode, theDisplay, null, null);
 	}
 
 	@Override

@@ -253,14 +253,14 @@ public class TerminologySvcImplR4Test extends BaseTermR4Test {
 	public void testValidateCode() {
 		createCodeSystem();
 
-		IValidationSupport.CodeValidationResult validation = myTermSvc.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null);
+		IValidationSupport.CodeValidationResult validation = myTermSvc.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null, null);
 		assertTrue(validation.isOk());
 
 		// The CodeSystem created by createCodeSystem() has content=not-present BUT it is backed by a
 		// local TermCodeSystem row populated with concepts. In that case the local DB is authoritative
 		// for this CodeSystem, so a miss must surface as a "code not found" error — not a fall-through.
 		// See GH-7796 / TermReadSvcImpl#isCodeSystemNotPresentAndHasNoLocalContent.
-		validation = myTermSvc.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "ZZZZZZZ", null, null);
+		validation = myTermSvc.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "ZZZZZZZ", null, null, null);
 		assertFalse(validation.isOk());
 	}
 
@@ -499,10 +499,10 @@ public class TerminologySvcImplR4Test extends BaseTermR4Test {
 		ValidationSupportContext context = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
 
-		outcome = myValidationSupport.validateCode(context, options, CS_URL, "A1002", null, null);
+		outcome = myValidationSupport.validateCode(context, options, CS_URL, "A1002", null, null, null);
 		assertTrue(outcome.isOk());
 
-		outcome = myValidationSupport.validateCode(context, options, CS_URL, "A1003", null, null);
+		outcome = myValidationSupport.validateCode(context, options, CS_URL, "A1003", null, null, null);
 		assertFalse(outcome.isOk());
 
 	}

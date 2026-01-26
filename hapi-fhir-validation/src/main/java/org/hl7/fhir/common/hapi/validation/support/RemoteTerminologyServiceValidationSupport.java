@@ -124,7 +124,8 @@ public class RemoteTerminologyServiceValidationSupport extends BaseTerminologySe
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 
 		return invokeRemoteValidateCode(theCodeSystem, theCode, theDisplay, theValueSetUrl, null);
 	}

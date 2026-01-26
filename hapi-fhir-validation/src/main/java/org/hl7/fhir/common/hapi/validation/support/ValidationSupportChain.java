@@ -66,7 +66,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  *     order, and aggregate the results into a single list to return.
  * </li>
  * <li>
- *     Calls to fetch or validate codes, such as {@link #validateCode(ValidationSupportContext, ConceptValidationOptions, String, String, String, String)}
+ *     Calls to fetch or validate codes, such as {@link IValidationSupport#validateCode(ValidationSupportContext, ConceptValidationOptions, String, String, String, String, IBaseResource)}
  *     and {@link #lookupCode(ValidationSupportContext, LookupCodeRequest)} will first test
  *     each module in the chain using the {@link #isCodeSystemSupported(ValidationSupportContext, String)}
  *     or {@link #isValueSetSupported(ValidationSupportContext, String)}
@@ -814,7 +814,8 @@ public class ValidationSupportChain implements IValidationSupport {
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 
 		ValidateCodeKey key = new ValidateCodeKey(theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl);
 		CacheValue<CodeValidationResult> retVal = getFromCache(key);
@@ -831,7 +832,8 @@ public class ValidationSupportChain implements IValidationSupport {
 							theCodeSystem,
 							theCode,
 							theDisplay,
-							theValueSetUrl);
+							theValueSetUrl,
+							theValueSet);
 					if (outcome != null) {
 						ourLog.debug(
 								"Code {}|{} '{}' in ValueSet {} validated by {}",

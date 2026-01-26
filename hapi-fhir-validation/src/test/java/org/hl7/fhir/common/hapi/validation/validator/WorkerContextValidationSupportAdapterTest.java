@@ -103,7 +103,7 @@ public class WorkerContextValidationSupportAdapterTest extends BaseValidationTes
 
 		// verify
 		verify(myValidationSupport, times(1)).validateCodeInValueSet(any(), any(), eq("http://codesystems.com/system"), eq("code0"), any(), any());
-		verify(myValidationSupport, times(1)).validateCode(any(), any(), eq("http://codesystems.com/system"), eq("code0"), any(), any());
+		verify(myValidationSupport, times(1)).validateCode(any(), any(), eq("http://codesystems.com/system"), eq("code0"), any(), any(), null);
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class WorkerContextValidationSupportAdapterTest extends BaseValidationTes
 
 		// verify
 		verify(myValidationSupport, times(1)).validateCodeInValueSet(any(), any(), eq(null), eq("code1"), any(), any());
-		verify(myValidationSupport, never()).validateCode(any(), any(), any(), any(), any(), any());
+		verify(myValidationSupport, never()).validateCode(any(), any(), any(), any(), any(), any(), null);
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class WorkerContextValidationSupportAdapterTest extends BaseValidationTes
 		String issueMessage = "Code not in here!";
 		CodeValidationIssue codeValidationIssue = new CodeValidationIssue(issueMessage, IssueSeverity.ERROR, CodeValidationIssueCode.NOT_FOUND, CodeValidationIssueCoding.NOT_FOUND);
 		CodeValidationResult codeValResult = new CodeValidationResult().setMessage("Bad code in CS").setCode(badCode).setCodeSystemName(system).setSeverity(IssueSeverity.ERROR).addIssue(codeValidationIssue);
-		when(myValidationSupport.validateCode(any(), any(), eq("http://codesystems.com/system"), eq(badCode) , any(), eq(null))).thenReturn(codeValResult);
+		when(myValidationSupport.validateCode(any(), any(), eq("http://codesystems.com/system"), eq(badCode) , any(), eq(null), null)).thenReturn(codeValResult);
 
 		ForkJoinPool pool = ForkJoinPool.commonPool();
 		List<ForkJoinTask<?>> futures = new ArrayList<>();

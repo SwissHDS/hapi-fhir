@@ -70,7 +70,8 @@ public class UnknownCodeSystemWarningValidationSupport extends BaseValidationSup
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 		// filters out error/fatal
 		if (!canValidateCodeSystem(theValidationSupportContext, theCodeSystem)) {
 			return null;

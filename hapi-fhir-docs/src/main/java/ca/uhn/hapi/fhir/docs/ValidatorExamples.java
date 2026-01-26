@@ -304,7 +304,8 @@ public class ValidatorExamples {
 					String theCodeSystem,
 					String theCode,
 					String theDisplay,
-					String theValueSetUrl) {
+					String theValueSetUrl,
+					IBaseResource theValueSet) {
 				// TODO: implement (or return null if your implementation does not support this function)
 				return null;
 			}
