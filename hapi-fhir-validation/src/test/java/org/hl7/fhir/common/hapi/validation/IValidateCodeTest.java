@@ -6,7 +6,6 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.test.utilities.validation.IValidationProviders;
 import ca.uhn.fhir.util.ClasspathUtil;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -69,13 +68,13 @@ public interface IValidateCodeTest {
 	@Test
 	default void validateCode_withCodeSystemBlankCode_ReturnsNull() {
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, null, DISPLAY, null);
+				.validateCode(null, null, CODE_SYSTEM, null, DISPLAY, null, null);
 		assertNull(outcome);
 	}
 
 	@Test
 	default void validateCode_withValueSetBlankCode_returnsNull() {
-		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, "", DISPLAY, VALUE_SET_URL);
+		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, "", DISPLAY, VALUE_SET_URL, null);
 		assertNull(outcome);
 	}
 
@@ -111,7 +110,7 @@ public interface IValidateCodeTest {
 																																	String theValueSetUrl) {
 		getCodeSystemProvider().addException(OPERATION_VALIDATE_CODE, theCodeSystem, CODE, theException);
 		getValueSetProvider().addException(OPERATION_VALIDATE_CODE, theValueSetUrl, CODE, theException);
-		CodeValidationResult outcome = getService().validateCode(null, null, theCodeSystem, CODE, DISPLAY, theValueSetUrl);
+		CodeValidationResult outcome = getService().validateCode(null, null, theCodeSystem, CODE, DISPLAY, theValueSetUrl, null);
 
 		verifyErrorResultFromException(outcome, theValidationMessage, theServerMessage);
 	}
@@ -131,7 +130,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(null, null, null, null);
 		IValidationSupport service = getService();
 		try {
-			service.validateCode(null, null, CODE_SYSTEM, CODE, null, null);
+			service.validateCode(null, null, CODE_SYSTEM, CODE, null, null, null);
 			fail();
 		} catch (IllegalArgumentException e) {
 			assertEquals("HAPI-2560: Parameter `result` is missing from the $validate-code response.", e.getMessage());
@@ -142,7 +141,7 @@ public interface IValidateCodeTest {
 	default void validateCode_withValueSetSuccess_returnsCorrectly() {
 		createValueSetReturnParameters(true, DISPLAY, null, null);
 
-		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL);
+		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL, null);
 		assertNotNull(outcome);
 		assertEquals(CODE, outcome.getCode());
 		assertEquals(DISPLAY, outcome.getDisplay());
@@ -155,7 +154,7 @@ public interface IValidateCodeTest {
 	default void validateCode_withCodeSystemSuccess_returnsCorrectly() {
 		createCodeSystemReturnParameters(true, DISPLAY, null, null);
 
-		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, null);
+		CodeValidationResult outcome = getService().validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, null, null);
 		assertNotNull(outcome);
 		assertEquals(CODE, outcome.getCode());
 		assertEquals(DISPLAY, outcome.getDisplay());
@@ -169,7 +168,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(true, null, null, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, null, null);
+				.validateCode(null, null, CODE_SYSTEM, CODE, null, null, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());
@@ -185,7 +184,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(true, DISPLAY, null, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, null);
+				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, null, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());
@@ -202,7 +201,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(false, null, ERROR_MESSAGE, invalidCodeOutcome);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, null, null);
+				.validateCode(null, null, CODE_SYSTEM, CODE, null, null, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());
@@ -218,7 +217,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(false, null, ERROR_MESSAGE, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, null, null);
+				.validateCode(null, null, CODE_SYSTEM, CODE, null, null, null);
 
 		String expectedError = getCodeSystemError();
 		assertNotNull(outcome);
@@ -240,7 +239,7 @@ public interface IValidateCodeTest {
 		createCodeSystemReturnParameters(false, null, null, invalidCodeOutcome);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, null, null);
+				.validateCode(null, null, CODE_SYSTEM, CODE, null, null, null);
 
 		String expectedError = getCodeSystemError();
 		assertNotNull(outcome);
@@ -261,7 +260,7 @@ public interface IValidateCodeTest {
 		createValueSetReturnParameters(true, null, null, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, null, VALUE_SET_URL);
+				.validateCode(null, null, CODE_SYSTEM, CODE, null, VALUE_SET_URL, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());
@@ -277,7 +276,7 @@ public interface IValidateCodeTest {
 		createValueSetReturnParameters(true, DISPLAY, null, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL);
+				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());
@@ -293,7 +292,7 @@ public interface IValidateCodeTest {
 		createValueSetReturnParameters(false, DISPLAY, ERROR_MESSAGE, null);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL);
+				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL, null);
 
 		String expectedError = getValueSetError();
 		assertNotNull(outcome);
@@ -314,7 +313,7 @@ public interface IValidateCodeTest {
 		createValueSetReturnParameters(false, DISPLAY, ERROR_MESSAGE, invalidCodeOutcome);
 
 		CodeValidationResult outcome = getService()
-				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL);
+				.validateCode(null, null, CODE_SYSTEM, CODE, DISPLAY, VALUE_SET_URL, null);
 		assertNotNull(outcome);
 		assertEquals(CODE_SYSTEM, outcome.getCodeSystemName());
 		assertEquals(CODE_SYSTEM_VERSION, outcome.getCodeSystemVersion());

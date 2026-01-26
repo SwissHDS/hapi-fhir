@@ -497,13 +497,13 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		String codeSystemUrl = "http://hl7.org/fhir/administrative-gender";
 		String valueSetUrl = "http://hl7.org/fhir/ValueSet/administrative-gender";
 		String code = "male";
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("Code was validated against in-memory expansion of ValueSet: http://hl7.org/fhir/ValueSet/administrative-gender", outcome.getSourceDetails());
 
 		// Validate Code - Bad
 		code = "AAA";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://hl7.org/fhir/administrative-gender#AAA' for in-memory expansion of ValueSet 'http://hl7.org/fhir/ValueSet/administrative-gender'");
 		assertEquals("error", outcome.getSeverityCode());
@@ -985,14 +985,14 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		String codeSystemUrl = "http://invalid-cs";
 		String valueSetUrl = "http://vs-with-invalid-cs";
 		String code = "28571000087109";
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://invalid-cs#28571000087109' for in-memory expansion of ValueSet 'http://vs-with-invalid-cs'");
 		assertEquals("error", outcome.getSeverityCode());
 
 		// Try validating a code that is in the missing CS that is imported by the VS
 		codeSystemUrl = "http://unknown-system";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertEquals("Failed to expand ValueSet 'http://vs-with-invalid-cs' (in-memory). Could not validate code http://unknown-system#28571000087109. Error was: " + Msg.code(702) + "Unable to expand ValueSet because CodeSystem could not be found: http://unknown-system", outcome.getMessage());
 		assertEquals("error", outcome.getSeverityCode());
@@ -1655,7 +1655,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		String display = null;
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk(), outcome.getMessage() + "\n" + myFhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(outcome.toParameters(myFhirContext)) + "\n" + outcome.getSourceDetails());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1666,7 +1666,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		display = "BLAH";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1678,7 +1678,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		display = "MODERNA COVID-19 mRNA-1273";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1687,7 +1687,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		// Validate code - bad code
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "BLAH";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertNull(outcome.getCode());
 		assertNull(outcome.getDisplay());
@@ -1701,7 +1701,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		display = null;
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1712,7 +1712,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		display = "BLAH";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1723,7 +1723,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "28571000087109";
 		display = "MODERNA COVID-19 mRNA-1273";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("28571000087109", outcome.getCode());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
@@ -1732,7 +1732,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		// Validate code - bad code
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "BLAH";
-		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertNull(outcome.getCode());
 		assertNull(outcome.getDisplay());
@@ -1778,7 +1778,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		code = "38765352";
 		String display = null;
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, vsId, new CodeType(code), new UriType(codeSystemUrl), new StringType(display), null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("in-memory expansion of ValueSet 'http://ehealthontario.ca/fhir/ValueSet/vaccinecode'");
 		assertThat(outcome.getMessage()).contains("Empty compose list for include");
@@ -1824,7 +1824,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "28571000087109";
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://snomed.info/sct#28571000087109' for in-memory expansion of ValueSet 'http://ehealthontario.ca/fhir/ValueSet/vaccinecode'");
 		assertEquals("error", outcome.getSeverityCode());
@@ -1883,7 +1883,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "28571000087109";
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://snomed.info/sct#28571000087109' for in-memory expansion of ValueSet 'http://ehealthontario.ca/fhir/ValueSet/vaccinecode'");
 		assertEquals("error", outcome.getSeverityCode());
@@ -1940,7 +1940,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "28571000087109";
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 	}
 
@@ -1975,7 +1975,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "28571000087109";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
 
@@ -1983,7 +1983,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "123";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 
 		ValueSet valueSet = myValueSetDao.expand(vs, new ValueSetExpansionOptions());
@@ -2039,7 +2039,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "28571000087109";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertEquals("MODERNA COVID-19 mRNA-1273", outcome.getDisplay());
 
@@ -2047,7 +2047,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		codeSystemUrl = "http://snomed.info/sct";
 		valueSetUrl = "http://ehealthontario.ca/fhir/ValueSet/vaccinecode";
 		code = "123";
-		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(new CodeType(valueSetUrl), null, new CodeType(code), new CodeType(codeSystemUrl), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 
 		ValueSet valueSet = myValueSetDao.expand(vs, new ValueSetExpansionOptions());
@@ -2136,12 +2136,12 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		assertThat(myValueSetTestUtil.toCodes(expansion)).containsExactly("B");
 
 		// Validate code that is good
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(vs.getUrlElement(), null, new StringType("B"), cs.getUrlElement(), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(vs.getUrlElement(), null, new StringType("B"), cs.getUrlElement(), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Code validation occurred using a ValueSet expansion that was pre-calculated");
 
 		// Validate code that is bad
-		outcome = myValueSetDao.validateCode(vs.getUrlElement(), null, new StringType("A"), cs.getUrlElement(), null, null, null, mySrd);
+		outcome = myValueSetDao.validateCode(vs.getUrlElement(), null, new StringType("A"), cs.getUrlElement(), null, null, null, null, mySrd);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Code validation occurred using a ValueSet expansion that was pre-calculated");
 	}

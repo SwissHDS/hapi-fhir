@@ -1509,6 +1509,26 @@ public class ResourceProviderR4ValueSetNoVerCSNoVerTest extends BaseResourceProv
 
 	}
 
+	@Test
+	public void testValidateCodeIgBuilder() throws Exception {
+		String string = loadResource("/validate-code-ig-builder.json");
+		HttpPost post = new HttpPost(myServerBase + "/ValueSet/%24validate-code");
+		post.setEntity(new StringEntity(string, ContentType.parse(ca.uhn.fhir.rest.api.Constants.CT_FHIR_JSON_NEW)));
+
+		try (CloseableHttpResponse resp = ourHttpClient.execute(post)) {
+
+			String respString = IOUtils.toString(resp.getEntity().getContent(), StandardCharsets.UTF_8);
+			ourLog.debug(respString);
+			ourLog.info(resp.toString());
+
+			assertEquals(200, resp.getStatusLine().getStatusCode());
+			var parameters = myFhirContext.newJsonParser().parseResource(Parameters.class, respString);
+			assertThat(parameters.getParameterValue("result").equalsDeep(new BooleanType(true))).isTrue();
+			assertThat(parameters.getParameterValue("display").equalsDeep(new StringType("Switzerland"))).isTrue();
+			assertThat(parameters.getParameter()).hasSize(2);
+		}
+	}
+
 	private void testValidateCodeOperationByCoding() throws Exception {
 		Coding codingToValidate = new Coding("http://acme.org", "8495-4", "Systolic blood pressure 24 hour minimum");
 

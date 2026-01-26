@@ -193,6 +193,7 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 			@OperationParam(name = "coding", min = 0, max = 1, typeName = "Coding") IBaseCoding theCoding,
 			@OperationParam(name = "codeableConcept", min = 0, max = 1, typeName = "CodeableConcept")
 					ICompositeType theCodeableConcept,
+			@OperationParam(name = "valueSet", min = 0, max = 1, typeName = "ValueSet") IBaseResource theValueSet,
 			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
@@ -253,6 +254,7 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 						theDisplay,
 						theCoding,
 						theCodeableConcept,
+						theValueSet,
 						theRequestDetails);
 			}
 			return result.toParameters(getContext());
@@ -270,7 +272,8 @@ public class ValueSetOperationProvider extends BaseJpaProvider {
 				theSystem,
 				theCode,
 				theDisplay,
-				theValueSetUrl));
+				theValueSetUrl,
+				null));
 	}
 
 	private Supplier<CodeValidationResult> supplyUnableToValidateResult(

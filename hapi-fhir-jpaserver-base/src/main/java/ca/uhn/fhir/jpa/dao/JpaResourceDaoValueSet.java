@@ -206,6 +206,7 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 			IPrimitiveType<String> theDisplay,
 			IBaseCoding theCoding,
 			IBaseDatatype theCodeableConcept,
+			IBaseResource theValueSet,
 			RequestDetails theRequestDetails) {
 
 		CodeableConcept codeableConcept = myVersionCanonicalizer.codeableConceptToCanonical(theCodeableConcept);
@@ -226,7 +227,7 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 					+ "$validate-code can only validate (system AND code) OR (coding) OR (codeableConcept)");
 		}
 
-		String valueSetIdentifier;
+		String valueSetIdentifier = "";
 		if (theValueSetId != null) {
 			IBaseResource valueSet = read(theValueSetId, theRequestDetails);
 			StringBuilder valueSetIdentifierBuilder =
@@ -238,10 +239,10 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 			valueSetIdentifier = valueSetIdentifierBuilder.toString();
 		} else if (isNotBlank(toStringValue(theValueSetIdentifier))) {
 			valueSetIdentifier = toStringValue(theValueSetIdentifier);
-		} else {
+		} else if (theValueSet == null) {
 			throw new InvalidRequestException(
 					Msg.code(901)
-							+ "Either ValueSet ID or ValueSet identifier or system and code must be provided. Unable to validate.");
+							+ "Either ValueSet, ValueSet ID or ValueSet identifier or system and code must be provided. Unable to validate.");
 		}
 
 		if (haveCodeableConcept) {
@@ -254,7 +255,7 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 				String display = nextCoding.getDisplay();
 
 				IValidationSupport.CodeValidationResult nextValidation =
-						validateCode(system, code, display, valueSetIdentifier);
+						validateCode(system, code, display, valueSetIdentifier, theValueSet);
 				anyValidation = nextValidation;
 				if (nextValidation.isOk()) {
 					return nextValidation;
@@ -266,22 +267,26 @@ public class JpaResourceDaoValueSet<T extends IBaseResource> extends BaseHapiFhi
 					canonicalCodingToValidate.getSystem(), canonicalCodingToValidate.getVersion());
 			String code = canonicalCodingToValidate.getCode();
 			String display = canonicalCodingToValidate.getDisplay();
-			return validateCode(system, code, display, valueSetIdentifier);
+			return validateCode(system, code, display, valueSetIdentifier, theValueSet);
 		} else {
 			String system = toStringValue(theSystem);
 			String code = toStringValue(theCode);
 			String display = toStringValue(theDisplay);
-			return validateCode(system, code, display, valueSetIdentifier);
+			return validateCode(system, code, display, valueSetIdentifier, theValueSet);
 		}
 	}
 
 	private IValidationSupport.CodeValidationResult validateCode(
-			String theSystem, String theCode, String theDisplay, String theValueSetIdentifier) {
+			String theSystem,
+			String theCode,
+			String theDisplay,
+			String theValueSetIdentifier,
+			IBaseResource theValueSet) {
 		ValidationSupportContext context = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
 		options.setValidateDisplay(isNotBlank(theDisplay));
 		IValidationSupport.CodeValidationResult result = myValidationSupport.validateCode(
-				context, options, theSystem, theCode, theDisplay, theValueSetIdentifier);
+				context, options, theSystem, theCode, theDisplay, theValueSetIdentifier, theValueSet);
 
 		if (result == null) {
 			result = new IValidationSupport.CodeValidationResult();

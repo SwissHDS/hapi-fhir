@@ -240,14 +240,15 @@ public class InMemoryTerminologyServerValidationSupport implements IValidationSu
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
-		IBaseResource vs;
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
+		IBaseResource vs = theValueSet;
 		if (isNotBlank(theValueSetUrl)) {
 			vs = theValidationSupportContext.getRootValidationSupport().fetchValueSet(theValueSetUrl);
 			if (vs == null) {
 				return null;
 			}
-		} else {
+		} else if (theValueSet == null) {
 			String codeSystemUrl;
 			String codeSystemVersion = null;
 			int codeSystemVersionIndex = theCodeSystem.indexOf("|");
@@ -626,6 +627,7 @@ public class InMemoryTerminologyServerValidationSupport implements IValidationSu
 				system,
 				code,
 				theLookupCodeRequest.getDisplayLanguage(),
+				null,
 				null);
 		if (codeValidationResult == null) {
 			return null;

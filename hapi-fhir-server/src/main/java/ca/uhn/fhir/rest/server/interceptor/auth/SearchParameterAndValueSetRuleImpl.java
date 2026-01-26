@@ -236,7 +236,13 @@ class SearchParameterAndValueSetRuleImpl extends RuleImplOp {
 					String code = terser.getSinglePrimitiveValueOrNull(nextCoding, "code");
 					if (isNotBlank(system) && isNotBlank(code)) {
 						IValidationSupport.CodeValidationResult validateCodeResult = theValidationSupport.validateCode(
-								validationSupportContext, conceptValidationOptions, system, code, null, theValueSetUrl);
+								validationSupportContext,
+								conceptValidationOptions,
+								system,
+								code,
+								null,
+								theValueSetUrl,
+								null);
 						if (validateCodeResult != null) {
 							if (validateCodeResult.isOk()) {
 								codeMatchCount.addMatchingCode();
