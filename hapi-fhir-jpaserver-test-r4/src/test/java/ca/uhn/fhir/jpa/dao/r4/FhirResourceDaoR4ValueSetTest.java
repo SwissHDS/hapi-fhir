@@ -74,7 +74,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 
 		ValidationSupportContext context = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
-		IValidationSupport.CodeValidationResult outcome = myValidationSupport.validateCode(context, options, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc", "378397893", null, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc");
+		IValidationSupport.CodeValidationResult outcome = myValidationSupport.validateCode(context, options, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc", "378397893", null, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc", null);
 		assertFalse(outcome.isOk());
 		assertEquals("Unable to validate code http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc#378397893 - Supplied system URL is a ValueSet URL and not a CodeSystem URL, check if it is correct: http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc", outcome.getMessage());
 	}
@@ -91,7 +91,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 
 		ValidationSupportContext context = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
-		IValidationSupport.CodeValidationResult outcome = myValidationSupport.validateCode(context, options, "http://payer-to-payer-exchange/fhir/CodeSystem/ndc", "378397893", null, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc");
+		IValidationSupport.CodeValidationResult outcome = myValidationSupport.validateCode(context, options, "http://payer-to-payer-exchange/fhir/CodeSystem/ndc", "378397893", null, "http://payer-to-payer-exchange/fhir/ValueSet/mental-health/ndc", null);
 		assertFalse(outcome.isOk());
 		assertEquals("Unable to validate code http://payer-to-payer-exchange/fhir/CodeSystem/ndc#378397893 - No codes in ValueSet belong to CodeSystem with URL http://payer-to-payer-exchange/fhir/CodeSystem/ndc", outcome.getMessage());
 	}
@@ -141,19 +141,19 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		ValidationSupportContext ctx = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("cannot apply filters");
 
 		// In memory - Enumerated in non-present CS
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertEquals("Code was validated against in-memory expansion of ValueSet: http://vs", outcome.getSourceDetails());
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://cs-np#codeX' for in-memory expansion of ValueSet 'http://vs'");
@@ -165,12 +165,12 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		logAllValueSets();
 		myValidationSupport.invalidateCaches();
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertThat(outcome.getMessage()).startsWith("Code validation occurred using a ValueSet expansion that was pre-calculated at ");
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code \"http://cs#childX\"");
@@ -178,12 +178,12 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 
 		// Precalculated - Enumerated in non-present CS
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertThat(outcome.getMessage()).startsWith("Code validation occurred using a ValueSet expansion that was pre-calculated at ");
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code \"http://cs-np#codeX\"");
@@ -239,24 +239,24 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 
 		// In memory - Hierarchy in existing CS
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("cannot apply filters");
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("cannot apply filters");
 
 		// In memory - Enumerated in non-present CS
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertEquals("Code was validated against in-memory expansion of ValueSet: http://vs", outcome.getSourceDetails());
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code 'http://cs-np#codeX' for in-memory expansion of ValueSet 'http://vs'");
@@ -268,12 +268,12 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		logAllValueSets();
 		myValidationSupport.invalidateCaches();
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "child10", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertThat(outcome.getMessage()).startsWith("Code validation occurred using a ValueSet expansion that was pre-calculated at ");
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs", "childX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code \"http://cs#childX\"");
@@ -281,12 +281,12 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 
 		// Precalculated - Enumerated in non-present CS
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "code1", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertTrue(outcome.isOk());
 		assertThat(outcome.getMessage()).startsWith("Code validation occurred using a ValueSet expansion that was pre-calculated at ");
 
-		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs");
+		outcome = myValidationSupport.validateCode(ctx, options, "http://cs-np", "codeX", null, "http://vs", null);
 		assertNotNull(outcome);
 		assertFalse(outcome.isOk());
 		assertThat(outcome.getMessage()).contains("Unknown code \"http://cs-np#codeX\"");
@@ -304,7 +304,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
 		try {
-			myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+			myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 			fail();
 		} catch (InvalidRequestException e) {
 			assertEquals(Msg.code(901) + "Either ValueSet ID or ValueSet identifier or system and code must be provided. Unable to validate.", e.getMessage());
@@ -320,7 +320,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType display = null;
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -334,7 +334,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType display = new StringType("Systolic blood pressure at First encounterXXXX");
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 		assertThat(result.getMessage()).contains("Concept Display \"Systolic blood pressure at First encounterXXXX\" does not match expected \"Systolic blood pressure at First encounter\" for 'http://acme.org#11378-7' for in-memory expansion of ValueSet 'http://www.healthintersections.com.au/fhir/ValueSet/extensional-case-2'");
@@ -349,7 +349,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType display = new StringType("Systolic blood pressure at First encounter");
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -364,7 +364,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		Coding coding = null;
 		CodeableConcept codeableConcept = new CodeableConcept();
 		codeableConcept.addCoding().setSystem("http://acme.org").setCode("11378-7");
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -381,17 +381,17 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		Coding coding = null;
 		CodeableConcept codeableConcept = new CodeableConcept();
 		codeableConcept.addCoding().setSystem("http://acme.org").setCode("11378-7");
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 
 		myTerminologyDeferredStorageSvc.saveDeferred();
-		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 
 		myTermSvc.preExpandDeferredValueSetsToTerminologyTables();
-		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -405,7 +405,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType display = null;
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -421,17 +421,17 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType display = null;
 		Coding coding = null;
 		CodeableConcept codeableConcept = null;
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 
 		myTerminologyDeferredStorageSvc.saveDeferred();
-		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 
 		myTermSvc.preExpandDeferredValueSetsToTerminologyTables();
-		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, mySrd);
+		result = myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 		assertTrue(result.isOk());
 		assertEquals("Systolic blood pressure at First encounter", result.getDisplay());
 	}
@@ -516,7 +516,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		StringType vsIdentifier = new StringType("http://hl7.org/fhir/ValueSet/administrative-gender");
 		StringType code = new StringType("male");
 		StringType system = new StringType("http://hl7.org/fhir/administrative-gender");
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(vsIdentifier, null, code, system, display, coding, codeableConcept, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(vsIdentifier, null, code, system, display, coding, codeableConcept, null, mySrd);
 
 		ourLog.info(result.getMessage());
 		assertThat(result.isOk()).as(result.getMessage()).isTrue();
@@ -550,7 +550,7 @@ public class FhirResourceDaoR4ValueSetTest extends BaseJpaR4Test {
 		myTermSvc.preExpandDeferredValueSetsToTerminologyTables();
 
 		myCaptureQueriesListener.clear();;
-		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, new IdType("ValueSet/vaccinecode"), new CodeType("28571000087109"), new CodeType("http://snomed.info/sct"), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(null, new IdType("ValueSet/vaccinecode"), new CodeType("28571000087109"), new CodeType("http://snomed.info/sct"), null, null, null, null, mySrd);
 		myCaptureQueriesListener.logSelectQueries();
 		assertEquals(9, myCaptureQueriesListener.countSelectQueries(), ()->myCaptureQueriesListener.getSelectQueries().stream().map(t->t.getSql(true, false)).collect(Collectors.joining("\n")));
 		assertThat(outcome.getMessage()).contains("Code validation occurred using a ValueSet expansion that was pre-calculated");

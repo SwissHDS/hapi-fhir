@@ -294,6 +294,7 @@ public interface IValidationSupport {
 	 * @param theCodeSystem               The code system, e.g. "<code>http://loinc.org</code>"
 	 * @param theCode                     The code, e.g. "<code>1234-5</code>"
 	 * @param theDisplay                  The display name, if it should also be validated
+	 * @param theValueSet                 A full ValueSet, passed via parameters
 	 * @return Returns a validation result object
 	 */
 	@Nullable
@@ -303,7 +304,8 @@ public interface IValidationSupport {
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 		return null;
 	}
 

@@ -2003,7 +2003,7 @@ public class TerminologySvcImplDstu3Test extends BaseJpaDstu3Test {
 	@Disabled
 	public void testValidateCodeWithProperties() {
 		createCodeSystem();
-		IValidationSupport.CodeValidationResult code = myValidationSupport.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "childAAB", null, null);
+		IValidationSupport.CodeValidationResult code = myValidationSupport.validateCode(new ValidationSupportContext(myValidationSupport), new ConceptValidationOptions(), CS_URL, "childAAB", null, null, null);
 		assertEquals(true, code.isOk());
 		assertThat(code.getProperties()).hasSize(2);
 	}

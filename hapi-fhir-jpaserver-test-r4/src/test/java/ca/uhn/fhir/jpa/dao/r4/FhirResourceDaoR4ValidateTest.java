@@ -2493,7 +2493,7 @@ public class FhirResourceDaoR4ValidateTest extends BaseJpaR4Test {
 
 		addLoincCodeToCodeSystemDao(loincCode);
 
-		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(new UriType("http://fooVs"), null, new StringType(loincCode), new StringType(ITermLoaderSvc.LOINC_URI), null, null, null, mySrd);
+		IValidationSupport.CodeValidationResult result = myValueSetDao.validateCode(new UriType("http://fooVs"), null, new StringType(loincCode), new StringType(ITermLoaderSvc.LOINC_URI), null, null, null, null, mySrd);
 
 		assertFalse(result.isOk());
 		assertEquals("Validator is unable to provide validation for 10013-1#http://loinc.org - Unknown or unusable ValueSet[http://fooVs]", result.getMessage());

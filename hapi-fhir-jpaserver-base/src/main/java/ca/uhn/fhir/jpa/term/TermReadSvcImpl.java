@@ -2947,7 +2947,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		}
 		String url = urlPrimitive.getValueAsString();
 		if (isNotBlank(url)) {
-			return validateCode(theValidationSupportContext, theOptions, theCodeSystem, theCode, theDisplay, url);
+			return validateCode(theValidationSupportContext, theOptions, theCodeSystem, theCode, theDisplay, url, null);
 		}
 		return null;
 	}
@@ -2960,14 +2960,21 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			String theCodeSystemUrl,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 		// TODO GGG TRY TO JUST AUTO_PASS HERE AND SEE WHAT HAPPENS.
 		invokeRunnableForUnitTest();
 		theOptions.setValidateDisplay(isNotBlank(theDisplay));
 
-		if (isNotBlank(theValueSetUrl)) {
+		if (isNotBlank(theValueSetUrl) || theValueSet != null) {
 			return validateCodeInValueSet(
-					theValidationSupportContext, theOptions, theValueSetUrl, theCodeSystemUrl, theCode, theDisplay);
+					theValidationSupportContext,
+					theOptions,
+					theValueSetUrl,
+					theValueSet,
+					theCodeSystemUrl,
+					theCode,
+					theDisplay);
 		}
 
 		TransactionTemplate txTemplate = new TransactionTemplate(myTransactionManager);
@@ -3009,11 +3016,13 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			ValidationSupportContext theValidationSupportContext,
 			ConceptValidationOptions theValidationOptions,
 			String theValueSetUrl,
+			IBaseResource theValueSet,
 			String theCodeSystem,
 			String theCode,
 			String theDisplay) {
-		IBaseResource valueSet =
-				theValidationSupportContext.getRootValidationSupport().fetchValueSet(theValueSetUrl);
+		IBaseResource valueSet = theValueSet != null
+				? theValueSet
+				: theValidationSupportContext.getRootValidationSupport().fetchValueSet(theValueSetUrl);
 		CodeValidationResult retVal = null;
 
 		// If we don't have a PID, this came from some source other than the JPA

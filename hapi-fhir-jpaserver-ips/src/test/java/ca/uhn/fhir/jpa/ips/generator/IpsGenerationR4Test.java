@@ -46,9 +46,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -448,12 +445,12 @@ public class IpsGenerationR4Test extends BaseResourceProviderR4Test {
 		@Nullable
 		@Override
 		public CodeValidationResult validateCode(
-			ValidationSupportContext theValidationSupportContext,
-			ConceptValidationOptions theOptions,
-			String theCodeSystem,
-			String theCode,
-			String theDisplay,
-			String theValueSetUrl) {
+                ValidationSupportContext theValidationSupportContext,
+                ConceptValidationOptions theOptions,
+                String theCodeSystem,
+                String theCode,
+                String theDisplay,
+                String theValueSetUrl, IBaseResource theValueSet) {
 			if ("http://loinc.org".equals(theCodeSystem)) {
 				if (loincCodes.contains(theCode)) {
 					return new CodeValidationResult().setCode(theCode);

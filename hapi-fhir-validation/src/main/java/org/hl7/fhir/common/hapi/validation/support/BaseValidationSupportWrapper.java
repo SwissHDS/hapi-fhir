@@ -80,9 +80,16 @@ public abstract class BaseValidationSupportWrapper extends BaseValidationSupport
 			String theCodeSystem,
 			String theCode,
 			String theDisplay,
-			String theValueSetUrl) {
+			String theValueSetUrl,
+			IBaseResource theValueSet) {
 		return myWrap.validateCode(
-				theValidationSupportContext, theOptions, theCodeSystem, theCode, theDisplay, theValueSetUrl);
+				theValidationSupportContext,
+				theOptions,
+				theCodeSystem,
+				theCode,
+				theDisplay,
+				theValueSetUrl,
+				theValueSet);
 	}
 
 	@Override
