@@ -276,6 +276,7 @@ public class JpaResourceDaoCodeSystem<T extends IBaseResource> extends BaseHapiF
 			IPrimitiveType<String> theDisplay,
 			IBaseCoding theCoding,
 			IBaseDatatype theCodeableConcept,
+			IBaseResource theCodeSystem,
 			RequestDetails theRequestDetails) {
 
 		CodeableConcept codeableConcept = myVersionCanonicalizer.codeableConceptToCanonical(theCodeableConcept);
@@ -303,9 +304,12 @@ public class JpaResourceDaoCodeSystem<T extends IBaseResource> extends BaseHapiF
 			codeSystemUrl = CommonCodeSystemsTerminologyService.getCodeSystemUrl(myFhirContext, codeSystem);
 		} else if (isNotBlank(toStringValue(theCodeSystemUrl))) {
 			codeSystemUrl = toStringValue(theCodeSystemUrl);
+		} else if (theCodeSystem != null) {
+			codeSystemUrl = CommonCodeSystemsTerminologyService.getCodeSystemUrl(myFhirContext, theCodeSystem);
 		} else {
-			throw new InvalidRequestException(Msg.code(908)
-					+ "Either CodeSystem ID or CodeSystem identifier must be provided. Unable to validate.");
+			throw new InvalidRequestException(
+					Msg.code(908)
+							+ "Either CodeSystem, CodeSystem ID or CodeSystem identifier must be provided. Unable to validate.");
 		}
 
 		if (haveCodeableConcept) {
