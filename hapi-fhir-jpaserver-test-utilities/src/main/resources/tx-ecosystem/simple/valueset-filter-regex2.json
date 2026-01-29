@@ -15,7 +15,7 @@
       "filter" : [{
         "property" : "code",
         "op" : "regex",
-        "value" : "[^ \\t\\r\\n\\f]{5}"
+        "value" : "[a-z0-9]{5}"
       }]
     }]
   }

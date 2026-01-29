@@ -905,7 +905,7 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 						.addFilter()
 						.setProperty("code")
 						.setOp(ValueSet.FilterOperator.REGEX)
-						.setValue("[^ \\t\\r\\n\\f]{4}[0-9]");
+						.setValue("[a-z]{4}[0-9]");
 					assertTrue(expanded.getCompose().equalsDeep(expected));
 				}
 			},
@@ -1012,7 +1012,7 @@ public class ResourceProviderR4TxSimpleTest extends BaseResourceProviderR4Test {
 						.addFilter()
 						.setProperty("code")
 						.setOp(ValueSet.FilterOperator.REGEX)
-						.setValue("[^ \\t\\r\\n\\f]{5}");
+						.setValue("[a-z0-9]{5}");
 					assertTrue(expanded.getCompose().equalsDeep(expected));
 				}
 			},
