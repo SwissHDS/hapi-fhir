@@ -1604,24 +1604,6 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			SearchPredicateFactory theF,
 			BooleanPredicateClausesStep<?> theB,
 			ValueSet.ConceptSetFilterComponent theFilter) {
-		/*
-		 * We treat the regex filter as a match on the regex
-		 * anywhere in the property string. The spec does not
-		 * say whether this is the right behaviour or not, but
-		 * there are examples that seem to suggest that it is.
-		 */
-		String value = theFilter.getValue();
-		if (value.endsWith("$")) {
-			value = value.substring(0, value.length() - 1);
-		} else if (!value.endsWith(".*")) {
-			value = value + ".*";
-		}
-		if (!value.startsWith("^") && !value.startsWith(".*")) {
-			value = ".*" + value;
-		} else if (value.startsWith("^")) {
-			value = value.substring(1);
-		}
-
 		theB.must(theF.regexp()
 				.field(
 						"code".equals(theFilter.getProperty()) || "concept".equals(theFilter.getProperty())
