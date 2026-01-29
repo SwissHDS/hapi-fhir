@@ -1642,8 +1642,13 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		}
 
 		theB.must(theF.regexp()
-				.field(CONCEPT_PROPERTY_PREFIX_NAME + theFilter.getProperty())
-				.matching(value));
+				.field(
+						"code".equals(theFilter.getProperty()) || "concept".equals(theFilter.getProperty())
+								? "myCode"
+								: "display".equals(theFilter.getProperty())
+										? "myDisplay"
+										: CONCEPT_PROPERTY_PREFIX_NAME + theFilter.getProperty())
+				.matching(theFilter.getValue()));
 	}
 
 	private void handleFilterLoincCopyright(
