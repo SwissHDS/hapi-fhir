@@ -306,6 +306,8 @@ public class JpaResourceDaoCodeSystem<T extends IBaseResource> extends BaseHapiF
 			codeSystemUrl = toStringValue(theCodeSystemUrl);
 		} else if (theCodeSystem != null) {
 			codeSystemUrl = CommonCodeSystemsTerminologyService.getCodeSystemUrl(myFhirContext, theCodeSystem);
+		} else if (haveCoding) {
+			codeSystemUrl = coding.getSystem();
 		} else {
 			throw new InvalidRequestException(
 					Msg.code(908)
