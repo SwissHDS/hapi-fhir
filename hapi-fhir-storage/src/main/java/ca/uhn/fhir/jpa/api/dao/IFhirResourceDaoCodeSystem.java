@@ -82,6 +82,7 @@ public interface IFhirResourceDaoCodeSystem<T extends IBaseResource> extends IFh
 			IPrimitiveType<String> theDisplay,
 			IBaseCoding theCoding,
 			IBaseDatatype theCodeableConcept,
+			IBaseResource theCodeSystem,
 			RequestDetails theRequestDetails);
 
 	class SubsumesResult {

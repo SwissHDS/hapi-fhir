@@ -12,6 +12,7 @@ import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -997,6 +999,26 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 
 		assertTrue(((BooleanType) respParam.getParameter().get(0).getValue()).booleanValue());
 		assertEquals("Code v2 display", ((StringType) respParam.getParameter().get(1).getValue()).getValueAsString());
+	}
+
+	@Test
+	public void testValidateIgBuilder() throws Exception {
+		String string = loadResource("/validate-code-ig-builder-code-system.json");
+		HttpPost post = new HttpPost(myServerBase + "/CodeSystem/%24validate-code");
+		post.setEntity(new StringEntity(string, ContentType.parse(ca.uhn.fhir.rest.api.Constants.CT_FHIR_JSON_NEW)));
+
+		try (CloseableHttpResponse resp = ourHttpClient.execute(post)) {
+
+			String respString = IOUtils.toString(resp.getEntity().getContent(), StandardCharsets.UTF_8);
+			ourLog.debug(respString);
+			ourLog.info(resp.toString());
+
+			assertEquals(200, resp.getStatusLine().getStatusCode());
+			var parameters = myFhirContext.newJsonParser().parseResource(Parameters.class, respString);
+			assertThat(parameters.getParameterValue("result").equalsDeep(new BooleanType(true))).isTrue();
+			assertThat(parameters.getParameterValue("display").equalsDeep(new StringType("German Switzerland"))).isTrue();
+			assertThat(parameters.getParameter()).hasSize(2);
+		}
 	}
 
 	private void createCodeSystem(String url, String version, String code, String display) {

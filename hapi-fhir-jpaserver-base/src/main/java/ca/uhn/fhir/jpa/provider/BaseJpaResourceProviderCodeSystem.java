@@ -163,11 +163,15 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 			@OperationParam(name = "coding", min = 0, max = 1, typeName = "Coding") IBaseCoding theCoding,
 			@OperationParam(name = "codeableConcept", min = 0, max = 1, typeName = "CodeableConcept")
 					IBaseDatatype theCodeableConcept,
+			@OperationParam(name = "codeSystem", min = 0, max = 1, typeName = "CodeSystem") IBaseResource theCodeSystem,
 			@OperationParam(name = "tx-resource", min = 0) List<IBaseResource> theTxResources,
 			RequestDetails theRequestDetails) {
 
 		CodeValidationResult result = null;
 		startRequest(theServletRequest);
+		if (theCodeSystem != null) {
+			theTxResources.add(theCodeSystem);
+		}
 		myTxResourceValidationSupport.setTxResourceForCurrentRequest(theTxResources);
 		try {
 			// TODO: JA why not just always just the chain here? and we can then get rid of the corresponding DAO method
@@ -225,6 +229,7 @@ public abstract class BaseJpaResourceProviderCodeSystem<T extends IBaseResource>
 						theDisplay,
 						theCoding,
 						theCodeableConcept,
+						theCodeSystem,
 						theRequestDetails);
 			}
 

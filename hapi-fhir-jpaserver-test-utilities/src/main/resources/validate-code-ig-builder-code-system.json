@@ -1,0 +1,32 @@
+{
+	"resourceType": "Parameters",
+	"parameter": [
+		{
+			"name": "coding",
+			"valueCoding": {
+				"system": "urn:ietf:bcp:47",
+				"code": "de-CH"
+			}
+		},
+		{
+			"name": "displayLanguage",
+			"valueString": "en-US"
+		},
+		{
+			"name": "default-to-latest-version",
+			"valueBoolean": true
+		},
+		{
+			"name": "cache-id",
+			"valueId": "55839b30-b9a4-422b-bec5-bde4f11e1d10"
+		},
+		{
+			"name": "system-version",
+			"valueUri": "http://snomed.info/sct|http://snomed.info/sct/2011000195101"
+		},
+		{
+			"name": "diagnostics",
+			"valueBoolean": true
+		}
+	]
+}
