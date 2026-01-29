@@ -1511,7 +1511,7 @@ public class ResourceProviderR4ValueSetNoVerCSNoVerTest extends BaseResourceProv
 
 	@Test
 	public void testValidateCodeIgBuilder() throws Exception {
-		String string = loadResource("/validate-code-ig-builder.json");
+		String string = loadResource("/validate-code-ig-builder-value-set.json");
 		HttpPost post = new HttpPost(myServerBase + "/ValueSet/%24validate-code");
 		post.setEntity(new StringEntity(string, ContentType.parse(ca.uhn.fhir.rest.api.Constants.CT_FHIR_JSON_NEW)));
 
