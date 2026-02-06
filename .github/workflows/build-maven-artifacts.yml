@@ -1,5 +1,9 @@
 name: Build maven artifacts
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
