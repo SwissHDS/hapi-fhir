@@ -71,7 +71,7 @@ public class ReplaceReferencesProvenanceSvc {
 	private final FhirContext myFhirContext;
 
 	public ReplaceReferencesProvenanceSvc(DaoRegistry theDaoRegistry) {
-		myProvenanceDao = theDaoRegistry.getResourceDao("Provenance");
+		myProvenanceDao = theDaoRegistry.getResourceDaoOrNull("Provenance");
 		myFhirContext = theDaoRegistry.getFhirContext();
 	}
 

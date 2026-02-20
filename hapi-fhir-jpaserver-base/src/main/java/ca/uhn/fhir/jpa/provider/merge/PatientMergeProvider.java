@@ -46,7 +46,7 @@ public class PatientMergeProvider extends BaseJpaResourceProvider<Patient> {
 			FhirContext theFhirContext,
 			DaoRegistry theDaoRegistry,
 			IMergeOperationProviderSvc theMergeOperationProviderSvc) {
-		super(theDaoRegistry.getResourceDao("Patient"));
+		super(theDaoRegistry.getResourceDaoOrNull("Patient"));
 		myFhirContext = theFhirContext;
 		assert myFhirContext.getVersion().getVersion() == FhirVersionEnum.R4;
 		myMergeOperationProviderSvc = theMergeOperationProviderSvc;

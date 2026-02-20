@@ -104,7 +104,7 @@ public class ResourceMergeService {
 		myStorageSettings = theStorageSettings;
 		myDaoRegistry = theDaoRegistry;
 
-		myTaskDao = theDaoRegistry.getResourceDao(Task.class);
+		myTaskDao = theDaoRegistry.getResourceDaoOrNull(Task.class);
 		myReplaceReferencesPatchBundleSvc = theReplaceReferencesPatchBundleSvc;
 		myResourceLinkDao = theResourceLinkDao;
 		myRequestPartitionHelperSvc = theRequestPartitionHelperSvc;
