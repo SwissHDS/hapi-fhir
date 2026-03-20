@@ -218,7 +218,7 @@ public class ValueSetExpansionComponentWithConceptAccumulator extends ValueSet.V
 				}
 				if ("status".equals(property.getKey())
 						&& "retired".equals(property.getValue())
-						&& TermConceptPropertyTypeEnum.STRING.equals(property.getType())) {
+						&& TermConceptPropertyTypeEnum.CODE.equals(property.getType())) {
 					contains.setInactive(true);
 				}
 			}

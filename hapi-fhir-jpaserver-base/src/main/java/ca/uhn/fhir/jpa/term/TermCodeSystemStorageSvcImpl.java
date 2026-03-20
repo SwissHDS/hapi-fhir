@@ -579,6 +579,7 @@ public class TermCodeSystemStorageSvcImpl implements ITermCodeSystemStorageSvc {
 			TermConcept existingCode = existingCodeOpt.get();
 			existingCode.setIndexStatus(null);
 			existingCode.setDisplay(conceptToAdd.getDisplay());
+			existingCode.setDefinition(conceptToAdd.getDefinition());
 			conceptToAdd = existingCode;
 			existingParentLinks = conceptToAdd.getParents();
 		} else {

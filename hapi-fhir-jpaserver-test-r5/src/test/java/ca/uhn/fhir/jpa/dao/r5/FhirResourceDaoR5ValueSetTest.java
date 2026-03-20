@@ -83,7 +83,7 @@ public class FhirResourceDaoR5ValueSetTest extends BaseJpaR5Test {
 			myValueSetDao.validateCode(valueSetIdentifier, id, code, system, display, coding, codeableConcept, null, mySrd);
 			fail();
 		} catch (InvalidRequestException e) {
-			assertEquals(Msg.code(901) + "Either ValueSet ID or ValueSet identifier or system and code must be provided. Unable to validate.", e.getMessage());
+			assertEquals(Msg.code(901) + "Either ValueSet, ValueSet ID or ValueSet identifier or system and code must be provided. Unable to validate.", e.getMessage());
 		}
 	}
 

@@ -183,6 +183,9 @@ public class TermConcept implements Serializable {
 			analyzer = "autocompletePhoneticAnalyzer")
 	private String myDisplay;
 
+	@Column(name = "DEFINITION", nullable = true, length = MAX_DESC_LENGTH)
+	private String myDefinition;
+
 	@OneToMany(mappedBy = "myConcept", orphanRemoval = false, fetch = FetchType.LAZY)
 	@PropertyBinding(binder = @PropertyBinderRef(type = TermConceptPropertyBinder.class))
 	private Collection<TermConceptProperty> myProperties;
@@ -398,6 +401,15 @@ public class TermConcept implements Serializable {
 		return this;
 	}
 
+	public String getDefinition() {
+		return myDefinition;
+	}
+
+	public TermConcept setDefinition(String theDefinition) {
+		myDefinition = left(theDefinition, MAX_DESC_LENGTH);
+		return this;
+	}
+
 	public TermConceptPk getPid() {
 		if (myId == null) {
 			myId = new TermConceptPk();
@@ -463,7 +475,8 @@ public class TermConcept implements Serializable {
 		List<String> retVal = new ArrayList<>();
 		for (TermConceptProperty next : getProperties()) {
 			if (thePropertyName.equals(next.getKey())) {
-				if (next.getType() == org.hl7.fhir.common.hapi.validation.util.TermConceptPropertyTypeEnum.STRING) {
+				if (next.getType() == TermConceptPropertyTypeEnum.STRING
+						|| next.getType() == TermConceptPropertyTypeEnum.CODE) {
 					retVal.add(next.getValue());
 				}
 			}
@@ -568,6 +581,7 @@ public class TermConcept implements Serializable {
 		b.append("csvPid", myCodeSystemVersionPid);
 		b.append("code", myCode);
 		b.append("display", myDisplay);
+		b.append("definition", myDefinition);
 		if (mySequence != null) {
 			b.append("sequence", mySequence);
 		}
