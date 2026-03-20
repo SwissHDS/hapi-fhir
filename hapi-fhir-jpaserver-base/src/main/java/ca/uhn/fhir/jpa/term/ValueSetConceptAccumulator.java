@@ -28,7 +28,6 @@ import ca.uhn.fhir.jpa.entity.TermValueSet;
 import ca.uhn.fhir.jpa.entity.TermValueSetConcept;
 import ca.uhn.fhir.jpa.entity.TermValueSetConceptDesignation;
 import ca.uhn.fhir.jpa.entity.TermValueSetConceptProperty;
-import ca.uhn.fhir.model.api.IPrimitiveDatatype;
 import ca.uhn.fhir.util.FhirVersionIndependentConcept;
 import ca.uhn.fhir.util.ValidateUtil;
 import jakarta.annotation.Nonnull;
@@ -37,6 +36,7 @@ import org.hl7.fhir.instance.model.api.IBaseBooleanDatatype;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.IBaseDecimalDatatype;
 import org.hl7.fhir.instance.model.api.IBaseIntegerDatatype;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
 
 import java.util.Collection;
 import java.util.Date;
@@ -103,8 +103,17 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 			} else if (next.getValue() instanceof IBaseDecimalDatatype value) {
 				property.setType(TermConceptPropertyTypeEnum.DECIMAL);
 				property.setValue(value.getValueAsString());
-			} else if (next.getValue() instanceof IPrimitiveDatatype<?> value) {
-				if (value.getValue() instanceof String) {
+			} else if (next.getValue() instanceof IPrimitiveType<?> value) {
+				// The CodeType classes in the different FHIR versions do not have a common super class
+				// which marks them as "code" vs any other string type.
+				if (value instanceof org.hl7.fhir.dstu2.model.CodeType
+						|| value instanceof org.hl7.fhir.dstu2016may.model.CodeType
+						|| value instanceof org.hl7.fhir.dstu3.model.CodeType
+						|| value instanceof org.hl7.fhir.r4.model.CodeType
+						|| value instanceof org.hl7.fhir.r4b.model.CodeType
+						|| value instanceof org.hl7.fhir.r5.model.CodeType) {
+					property.setType(TermConceptPropertyTypeEnum.CODE);
+				} else if (value.getValue() instanceof String) {
 					property.setType(TermConceptPropertyTypeEnum.STRING);
 				} else if (value.getValue() instanceof Date) {
 					property.setType(TermConceptPropertyTypeEnum.DATETIME);

@@ -35,6 +35,10 @@ public enum TermConceptPropertyTypeEnum {
 	 */
 	STRING,
 	/**
+	 * Code
+	 */
+	CODE,
+	/**
 	 * Coding
 	 */
 	CODING,
