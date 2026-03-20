@@ -777,6 +777,7 @@ public interface IValidationSupport {
 	// Some of the types in the spec are not yet implemented as well.
 	// @see https://github.com/hapifhir/hapi-fhir/issues/5700
 	String TYPE_STRING = "string";
+	String TYPE_CODE = "code";
 	String TYPE_BOOLEAN = "boolean";
 	String TYPE_CODING = "Coding";
 	String TYPE_GROUP = "group";
@@ -801,6 +802,24 @@ public interface IValidationSupport {
 		@Override
 		public String getType() {
 			return TYPE_STRING;
+		}
+	}
+
+	class CodeConceptProperty extends BaseConceptProperty {
+		private final String myValue;
+
+		public CodeConceptProperty(String theName, String theValue) {
+			super(theName);
+			myValue = theValue;
+		}
+
+		public String getValue() {
+			return myValue;
+		}
+
+		@Override
+		public String getType() {
+			return TYPE_CODE;
 		}
 	}
 
@@ -1129,9 +1148,12 @@ public interface IValidationSupport {
 
 	class LookupCodeResult {
 
+		private String myCode;
 		private String myCodeDisplay;
+		private String myCodeDefinition;
 		private boolean myCodeIsAbstract;
 		private String myCodeSystemDisplayName;
+		private String myCodeSystemUri;
 		private String myCodeSystemVersion;
 		private boolean myFound;
 		private String mySearchedForCode;
@@ -1174,12 +1196,36 @@ public interface IValidationSupport {
 			myCodeDisplay = theCodeDisplay;
 		}
 
+		public String getCodeDefinition() {
+			return myCodeDefinition;
+		}
+
+		public void setCodeDefinition(String theCodeDefinition) {
+			myCodeDefinition = theCodeDefinition;
+		}
+
+		public String getCode() {
+			return myCode;
+		}
+
+		public void setCode(String theCode) {
+			myCode = theCode;
+		}
+
 		public String getCodeSystemDisplayName() {
 			return myCodeSystemDisplayName;
 		}
 
 		public void setCodeSystemDisplayName(String theCodeSystemDisplayName) {
 			myCodeSystemDisplayName = theCodeSystemDisplayName;
+		}
+
+		public String getCodeSystemUri() {
+			return myCodeSystemUri;
+		}
+
+		public void setCodeSystemUri(String theCodeSystemUri) {
+			myCodeSystemUri = theCodeSystemUri;
 		}
 
 		public String getCodeSystemVersion() {
@@ -1243,19 +1289,30 @@ public interface IValidationSupport {
 				FhirContext theContext, List<? extends IPrimitiveType<String>> thePropertyNamesToFilter) {
 
 			IBaseParameters retVal = ParametersUtil.newInstance(theContext);
+			if (isNotBlank(getCode())) {
+				ParametersUtil.addParameterToParametersCode(theContext, retVal, "code", getCode());
+			}
 			if (isNotBlank(getCodeSystemDisplayName())) {
 				ParametersUtil.addParameterToParametersString(theContext, retVal, "name", getCodeSystemDisplayName());
+			}
+			if (isNotBlank(getCodeSystemUri())) {
+				ParametersUtil.addParameterToParametersUri(theContext, retVal, "system", getCodeSystemUri());
 			}
 			if (isNotBlank(getCodeSystemVersion())) {
 				ParametersUtil.addParameterToParametersString(theContext, retVal, "version", getCodeSystemVersion());
 			}
 			ParametersUtil.addParameterToParametersString(theContext, retVal, "display", getCodeDisplay());
+			if (isNotBlank(getCodeDefinition())) {
+				ParametersUtil.addParameterToParametersString(theContext, retVal, "definition", getCodeDefinition());
+			}
 			ParametersUtil.addParameterToParametersBoolean(theContext, retVal, "abstract", isCodeIsAbstract());
 
 			if (myProperties != null) {
 
 				final List<BaseConceptProperty> propertiesToReturn;
-				if (thePropertyNamesToFilter != null && !thePropertyNamesToFilter.isEmpty()) {
+				if (thePropertyNamesToFilter != null
+						&& thePropertyNamesToFilter.stream().noneMatch(f -> "*".equals(f.getValue()))
+						&& !thePropertyNamesToFilter.isEmpty()) {
 					// TODO MM: The logic to filter of properties could actually be moved to the lookupCode provider.
 					// That is where the rest of the lookupCode input parameter handling is done.
 					// This was left as is for now but can be done with next opportunity.
@@ -1296,6 +1353,10 @@ public interface IValidationSupport {
 				case TYPE_STRING:
 					StringConceptProperty stringConceptProperty = (StringConceptProperty) theConceptProperty;
 					ParametersUtil.addPartString(theContext, theProperty, "value", stringConceptProperty.getValue());
+					break;
+				case TYPE_CODE:
+					CodeConceptProperty codeConceptProperty = (CodeConceptProperty) theConceptProperty;
+					ParametersUtil.addPartCode(theContext, theProperty, "value", codeConceptProperty.getValue());
 					break;
 				case TYPE_BOOLEAN:
 					BooleanConceptProperty booleanConceptProperty = (BooleanConceptProperty) theConceptProperty;

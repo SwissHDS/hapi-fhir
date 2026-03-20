@@ -130,6 +130,7 @@ import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.CodeSystem;
+import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
@@ -2851,11 +2852,15 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 
 				IValidationSupport.LookupCodeResult result = new IValidationSupport.LookupCodeResult();
 				result.setCodeSystemDisplayName(code.getCodeSystemVersion().getCodeSystemDisplayName());
+				result.setCodeSystemUri(
+						code.getCodeSystemVersion().getCodeSystem().getCodeSystemUri());
 				result.setCodeSystemVersion(code.getCodeSystemVersion().getCodeSystemVersionId());
 				result.setSearchedForSystem(theSystem);
 				result.setSearchedForCode(theCode);
 				result.setFound(true);
+				result.setCode(code.getCode());
 				result.setCodeDisplay(code.getDisplay());
+				result.setCodeDefinition(code.getDefinition());
 
 				for (TermConceptDesignation next : code.getDesignations()) {
 					// filter out the designation based on displayLanguage if any
@@ -2871,21 +2876,50 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				}
 
 				final Collection<String> propertyNames = theLookupCodeRequest.getPropertyNames();
+				final boolean shouldReturnAllProperties = propertyNames.contains("*");
 				for (TermConceptProperty next : code.getProperties()) {
-					if (ObjectUtils.isNotEmpty(propertyNames) && !propertyNames.contains(next.getKey())) {
+					if (ObjectUtils.isNotEmpty(propertyNames)
+							&& !shouldReturnAllProperties
+							&& !propertyNames.contains(next.getKey())) {
 						continue;
 					}
-					if (next.getType() == TermConceptPropertyTypeEnum.CODING) {
-						IValidationSupport.CodingConceptProperty property =
-								new IValidationSupport.CodingConceptProperty(
+
+					var property =
+							switch (next.getType()) {
+								case STRING -> new IValidationSupport.StringConceptProperty(
+										next.getKey(), next.getValue());
+								case CODE -> new IValidationSupport.CodeConceptProperty(next.getKey(), next.getValue());
+								case CODING -> new IValidationSupport.CodingConceptProperty(
 										next.getKey(), next.getCodeSystem(), next.getValue(), next.getDisplay());
-						result.getProperties().add(property);
-					} else if (next.getType() == TermConceptPropertyTypeEnum.STRING) {
-						IValidationSupport.StringConceptProperty property =
-								new IValidationSupport.StringConceptProperty(next.getKey(), next.getValue());
-						result.getProperties().add(property);
-					} else {
-						throw new InternalErrorException(Msg.code(905) + "Unknown type: " + next.getType());
+								case BOOLEAN -> new IValidationSupport.BooleanConceptProperty(
+										next.getKey(), new BooleanType(next.getValue()).booleanValue());
+								case INTEGER, DECIMAL, DATETIME -> throw new InternalErrorException(
+										Msg.code(905) + "Unsupported type: " + next.getType());
+							};
+					result.getProperties().add(property);
+				}
+				final boolean isInactive = code.getProperties().stream()
+						.anyMatch(p -> ("status".equals(p.getKey())
+										&& List.of("retired", "inactive").contains(p.getValue()))
+								|| ("inactive".equals(p.getKey()) && "true".equals(p.getValue())));
+				result.getProperties().add(new IValidationSupport.BooleanConceptProperty("inactive", isInactive));
+
+				final boolean isAbstract = code.getProperties().stream()
+						.anyMatch(p -> "notSelectable".equals(p.getKey()) && "true".equals(p.getValue()));
+				result.setCodeIsAbstract(isAbstract);
+
+				if (shouldReturnAllProperties || propertyNames.contains("child")) {
+					for (var childConcept : code.getChildCodes()) {
+						result.getProperties()
+								.add(new IValidationSupport.CodeConceptProperty("child", childConcept.getCode()));
+					}
+				}
+
+				if (shouldReturnAllProperties || propertyNames.contains("parent")) {
+					for (var parentConcept : code.getParents()) {
+						result.getProperties()
+								.add(new IValidationSupport.CodeConceptProperty(
+										"parent", parentConcept.getParent().getCode()));
 					}
 				}
 
@@ -3546,6 +3580,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		termConcept.setCode(theConceptDefinition.getCode());
 		termConcept.setCodeSystemVersion(theCodeSystemVersion);
 		termConcept.setDisplay(theConceptDefinition.getDisplay());
+		termConcept.setDefinition(theConceptDefinition.getDefinition());
 
 		termConcept.addChildren(
 				toPersistedConcepts(theConceptDefinition.getConcept(), theCodeSystemVersion), RelationshipTypeEnum.ISA);
@@ -3580,7 +3615,10 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			property.setConcept(termConcept);
 			property.setCodeSystemVersion(theCodeSystemVersion);
 
-			if (next.getValue() instanceof StringType) {
+			if (next.getValue() instanceof CodeType) {
+				property.setType(TermConceptPropertyTypeEnum.CODE);
+				property.setValue(next.getValueStringType().getValue());
+			} else if (next.getValue() instanceof StringType) {
 				property.setType(TermConceptPropertyTypeEnum.STRING);
 				property.setValue(next.getValueStringType().getValue());
 			} else if (next.getValue() instanceof BooleanType) {
