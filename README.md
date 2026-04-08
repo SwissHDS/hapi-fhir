@@ -14,7 +14,7 @@ It extends operations on ValueSets, CodeSystems and Concepts maps to match the F
 The goal of this fork is to match the majority of the requirements defined in the simple-cases tests defined in 
 [FHIR Terminology Ecosystem IG](https://build.fhir.org/ig/HL7/fhir-tx-ecosystem-ig/testcases.html). 
 
-A collection of tests is available to validate the implementation when compiled locally together with 
+A collection of tests is available to validate the implementation when compiled locally with 
 the [Swiss Terminology Provider](https://github.com/SwissHDS/swiss-hds-terminolgy-provider) starter project. 
 These tests are inspired by the NHS®. Source: https://digital.nhs.uk/services/terminology-server.
 
