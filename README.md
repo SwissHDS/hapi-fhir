@@ -1,45 +1,34 @@
-HAPI FHIR
+HAPI FHIR Fork for the Swiss Terminology Provider
 =========
-
-HAPI FHIR - Java API for HL7 FHIR Clients and Servers
 
 [![License][Badge-License]][Link-License]
 
-## CI/CD
-| CI Status (master) | SNAPSHOT Pipeline | Current Release |
-| :---: | :---: | :---: |
-| [![Build Status][Badge-AzurePipelineMaster]][Link-AzurePipelinesMaster] | [![Build Status][Badge-AzureReleaseSnapshot]][Link-AzurePipelinesSnapshot] | [![Release Artifacts][Badge-MavenCentral]][Link-MavenCentral] |
+This Fork of the HAPI FHIR project adds functionality required for the Swiss Terminology Provider. 
+It extends operations on ValueSets, CodeSystems and Concepts maps to match the FHIR Standard.
 
-## Coverage and Quality
+| **Resource**                  | **Operation**          | **Example**                                                                                                              |
+| ------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **ValueSet**              | **$expand**        | Preview the full set of codes (with filters), check multilingual displays, paging, and active-only flags before publishing. |
+| **ValueSet / CodeSystem** | **$validate-code** | Prove that a code (system+code+display) is valid and (if ValueSet) **in** the set. Usefull for CI or Publishing             |
+| **CodeSystem**            | **$lookup**        | Inspect a code’s official display, properties (e.g., `inactive`) and designations in each language.                         |
+| **ConceptMap**            | **$translate**     | Validate and preview mappings (source→target), including equivalence and dependency parameters.                             |
 
-[![codecov][Badge-CodeCov]][Link-CodeCov]
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/hapifhir/hapi-fhir.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hapifhir/hapi-fhir/context:java)
+The goal of this fork is to match the majority of the requirements defined in the simple-cases tests defined in 
+[FHIR Terminology Ecosystem IG](https://build.fhir.org/ig/HL7/fhir-tx-ecosystem-ig/testcases.html). 
+
+A collection of tests is available to validate the implementation when compiled locally together with 
+the [Swiss HDS Terminology Provider](https://github.com/SwissHDS/swiss-hds-terminolgy-provider) starter project. 
+These tests are inspired by the NHS®. Source: https://digital.nhs.uk/services/terminology-server.
+
+You may get the collection for Postman or Bruno here:
+- [Postman Collection](https://github.com/SwissHDS/swiss-hds-terminolgy-provider/wiki/postmancollection_v0.9.json)
+- [Bruno Collection](https://github.com/SwissHDS/swiss-hds-terminolgy-provider/wiki/brunocollection_v0.9.json)
 
 ## Documentation and wiki
 
-Complete project documentation is available here:
-http://hapifhir.io
+For the documentation of this fork, please see [ Wiki](https://github.com/SwissHDS/swiss-hds-terminology-provider/wiki). 
 
-A demonstration of this project is available here:
-http://hapi.fhir.org/
+For the documentation of the original HAPI FHIR project see http://hapifhir.io.
 
 This project is Open Source, licensed under the Apache Software License 2.0.
 
-Please see [this wiki page][Link-wiki] for information on where to get help with HAPI FHIR.
-
-Please see [Smile CDR][Link-SmileCDR] for information on commercial support.
-
-[Link-AzurePipelines]: https://dev.azure.com/hapifhir/HAPI%20FHIR/_build
-[Link-AzurePipelinesMaster]: https://dev.azure.com/hapifhir/HAPI%20FHIR/_build?definitionId=2
-[Link-AzurePipelinesSnapshot]: https://dev.azure.com/hapifhir/HAPI%20FHIR/_build?definitionId=3
-[Link-MavenCentral]: http://search.maven.org/#search|ga|1|ca.uhn.hapi.fhir
-[Link-CodeCov]: https://codecov.io/gh/hapifhir/hapi-fhir
-[Link-wiki]: https://github.com/hapifhir/hapi-fhir/wiki/Getting-Help
-[Link-SmileCDR]: https://smilecdr.com
-[Link-License]: https://hapifhir.io/hapi-fhir/license.html
-
-[Badge-AzurePipelineMaster]: https://dev.azure.com/hapifhir/HAPI%20FHIR/_apis/build/status/hapifhir.hapi-fhir?branchName=refs%2Fpull%2F2319%2Fmerge
-[Badge-AzureReleaseSnapshot]: https://dev.azure.com/hapifhir/HAPI%20FHIR/_apis/build/status/SNAPSHOT%20pipeline?branchName=master
-[Badge-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/ca.uhn.hapi.fhir/hapi-fhir-base/badge.svg
-[Badge-CodeCov]: https://codecov.io/gh/hapifhir/hapi-fhir/branch/master/graph/badge.svg?token=zHfnKfQB9X
-[Badge-License]: https://img.shields.io/badge/license-apache%202.0-60C060.svg
