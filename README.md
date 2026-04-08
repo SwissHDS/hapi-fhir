@@ -1,8 +1,6 @@
 HAPI FHIR Fork for the Swiss Terminology Provider
 =========
 
-[![License][Badge-License]][Link-License]
-
 This Fork of the HAPI FHIR project adds functionality required for the Swiss Terminology Provider. 
 It extends operations on ValueSets, CodeSystems and Concepts maps to match the FHIR Standard.
 
