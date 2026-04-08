@@ -24,7 +24,7 @@ You may get the collection for Postman or Bruno here:
 
 ## Documentation and wiki
 
-For the documentation of this fork, please see [ Wiki](https://github.com/SwissHDS/swiss-hds-terminology-provider/wiki). 
+For the documentation of this fork, please see [Swiss Terminology Provider Wiki](https://github.com/SwissHDS/swiss-hds-terminology-provider/wiki). 
 
 For the documentation of the original HAPI FHIR project see http://hapifhir.io.
 
