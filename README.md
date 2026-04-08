@@ -15,7 +15,7 @@ The goal of this fork is to match the majority of the requirements defined in th
 [FHIR Terminology Ecosystem IG](https://build.fhir.org/ig/HL7/fhir-tx-ecosystem-ig/testcases.html). 
 
 A collection of tests is available to validate the implementation when compiled locally together with 
-the [Swiss HDS Terminology Provider](https://github.com/SwissHDS/swiss-hds-terminolgy-provider) starter project. 
+the [Swiss Terminology Provider](https://github.com/SwissHDS/swiss-hds-terminolgy-provider) starter project. 
 These tests are inspired by the NHS®. Source: https://digital.nhs.uk/services/terminology-server.
 
 You may get the collection for Postman or Bruno here:
