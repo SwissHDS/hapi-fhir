@@ -26,18 +26,14 @@ import ca.uhn.fhir.jpa.term.IZipContentsHandlerCsv;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public final class SctHandlerRelationship implements IZipContentsHandlerCsv {
 	private final Map<String, TermConcept> myCode2concept;
 	private final TermCodeSystemVersion myCodeSystemVersion;
 
 	public SctHandlerRelationship(
-			TermCodeSystemVersion theCodeSystemVersion,
-			Map<String, TermConcept> theCode2concept) {
+			TermCodeSystemVersion theCodeSystemVersion, Map<String, TermConcept> theCode2concept) {
 		myCodeSystemVersion = theCodeSystemVersion;
 		myCode2concept = theCode2concept;
 	}
@@ -69,8 +65,7 @@ public final class SctHandlerRelationship implements IZipContentsHandlerCsv {
 				targetConcept.addChild(sourceConcept, relationshipType);
 			} else {
 				// not active, so we're removing any existing links
-				for (TermConceptParentChildLink next :
-						new ArrayList<>(targetConcept.getChildren())) {
+				for (TermConceptParentChildLink next : new ArrayList<>(targetConcept.getChildren())) {
 					if (next.getRelationshipType() == relationshipType) {
 						if (next.getChild().getCode().equals(sourceConcept.getCode())) {
 							next.getParent().getChildren().remove(next);
