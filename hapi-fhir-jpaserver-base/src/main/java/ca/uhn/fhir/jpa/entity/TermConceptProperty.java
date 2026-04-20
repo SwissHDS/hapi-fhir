@@ -290,8 +290,10 @@ public class TermConceptProperty extends BasePartitionable implements Serializab
 
 	public TermConceptProperty setCodeSystemVersion(TermCodeSystemVersion theCodeSystemVersion) {
 		myCodeSystemVersion = theCodeSystemVersion;
-		myCodeSystemVersionPid = theCodeSystemVersion.getPid();
-		setPartitionId(theCodeSystemVersion.getPartitionId());
+		if (theCodeSystemVersion != null) {
+			myCodeSystemVersionPid = theCodeSystemVersion.getPid();
+			setPartitionId(theCodeSystemVersion.getPartitionId());
+		}
 		return this;
 	}
 
