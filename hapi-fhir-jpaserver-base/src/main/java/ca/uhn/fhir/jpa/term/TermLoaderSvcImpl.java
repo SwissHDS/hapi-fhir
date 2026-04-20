@@ -24,7 +24,6 @@ import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.jpa.entity.TermCodeSystemVersion;
 import ca.uhn.fhir.jpa.entity.TermConcept;
 import ca.uhn.fhir.jpa.entity.TermConceptParentChildLink;
-import ca.uhn.fhir.jpa.entity.TermConceptProperty;
 import ca.uhn.fhir.jpa.term.api.ITermCodeSystemStorageSvc;
 import ca.uhn.fhir.jpa.term.api.ITermDeferredStorageSvc;
 import ca.uhn.fhir.jpa.term.api.ITermLoaderSvc;
@@ -82,6 +81,7 @@ import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.ValueSet;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.UriUtils;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -1043,7 +1043,6 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 	private UploadStatistics processSnomedCtFiles(
 			LoadedFileDescriptors theDescriptors, RequestDetails theRequestDetails) {
 		final TermCodeSystemVersion codeSystemVersion = new TermCodeSystemVersion();
-		final Map<String, TermConcept> id2concept = new HashMap<>();
 		final Map<String, TermConcept> code2concept = new HashMap<>();
 		final Set<String> validConceptIds = new HashSet<>();
 
@@ -1052,7 +1051,7 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 
 		ourLog.info("Have {} valid concept IDs", validConceptIds.size());
 
-		handler = new SctHandlerDescription(validConceptIds, code2concept, id2concept, codeSystemVersion);
+		handler = new SctHandlerDescription(validConceptIds, code2concept, codeSystemVersion);
 		iterateOverZipFileCsv(theDescriptors, SCT_FILE_DESCRIPTION, handler, '\t', null, true);
 
 		ourLog.info("Got {} concepts, cloning map", code2concept.size());
@@ -1091,6 +1090,9 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 		cs.setName("SNOMED CT");
 		cs.setContent(CodeSystem.CodeSystemContentMode.NOTPRESENT);
 		cs.setStatus(Enumerations.PublicationStatus.ACTIVE);
+		// The uploader does not allow `:` inside the header value.
+		// To circumvent this, URL-encoding is allowed and decoded here.
+		cs.setVersion(UriUtils.decode(theRequestDetails.getHeader("X-SNOMED-CT-VERSION"), "UTF-8"));
 		IIdType target = storeCodeSystem(theRequestDetails, codeSystemVersion, cs, null, null);
 
 		return new UploadStatistics(code2concept.size(), target);
@@ -1228,24 +1230,5 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 			}
 		}
 		return retVal;
-	}
-
-	public static TermConcept getOrCreateConcept(Map<String, TermConcept> id2concept, String id) {
-		TermConcept concept = id2concept.get(id);
-		if (concept == null) {
-			concept = new TermConcept();
-			id2concept.put(id, concept);
-		}
-		return concept;
-	}
-
-	public static TermConceptProperty getOrCreateConceptProperty(
-			Map<String, List<TermConceptProperty>> code2Properties, String code, String key) {
-		List<TermConceptProperty> termConceptProperties = code2Properties.get(code);
-		if (termConceptProperties == null) return new TermConceptProperty();
-		Optional<TermConceptProperty> termConceptProperty = termConceptProperties.stream()
-				.filter(property -> key.equals(property.getKey()))
-				.findFirst();
-		return termConceptProperty.orElseGet(TermConceptProperty::new);
 	}
 }
