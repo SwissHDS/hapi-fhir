@@ -585,7 +585,7 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 			myClient.operation().onType(CodeSystem.class).named("validate-code").withParameters(inParams).execute();
 			fail();
 		} catch (InvalidRequestException e) {
-			assertEquals("HTTP 400 Bad Request: " + Msg.code(908) + "Either CodeSystem ID or CodeSystem identifier must be provided. Unable to validate.", e.getMessage());
+			assertEquals("HTTP 400 Bad Request: " + Msg.code(908) + "Either CodeSystem, CodeSystem ID or CodeSystem identifier must be provided. Unable to validate.", e.getMessage());
 		}
 	}
 
