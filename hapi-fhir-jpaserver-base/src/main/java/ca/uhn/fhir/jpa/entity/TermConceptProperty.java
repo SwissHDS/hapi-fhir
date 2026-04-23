@@ -249,7 +249,7 @@ public class TermConceptProperty extends BasePartitionable implements Serializab
 	 * property, and the code for a {@link TermConceptPropertyTypeEnum#CODING coding} property.
 	 */
 	public TermConceptProperty setValue(String theValue) {
-		if (theValue.length() > MAX_LENGTH) {
+		if (theValue != null && theValue.length() > MAX_LENGTH) {
 			setValueBin(theValue);
 		} else {
 			myValueLob = null;
