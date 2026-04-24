@@ -578,12 +578,21 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				addedCodes));
 
 		ValueSet valueSet = new ValueSet();
+
+		if (theValueSetToExpand.getStatus() == null) {
+			// A ValueSet without status is invalid.
+			// Questionable why such a ValueSet would be expanded in the first place but without this special case,
+			// a couple of the tests fail.
+			valueSet.setStatus(Enumerations.PublicationStatus.ACTIVE);
+		} else {
+			valueSet.setStatusElement(theValueSetToExpand.getStatusElement());
+		}
+
 		valueSet.setIdElement(theValueSetToExpand.getIdElement());
 		valueSet.setUrlElement(theValueSetToExpand.getUrlElement());
 		valueSet.setVersionElement(theValueSetToExpand.getVersionElement());
 		valueSet.setNameElement(theValueSetToExpand.getNameElement());
 		valueSet.setTitleElement(theValueSetToExpand.getTitleElement());
-		valueSet.setStatusElement(theValueSetToExpand.getStatusElement());
 		valueSet.setExperimentalElement(theValueSetToExpand.getExperimentalElement());
 		valueSet.setDateElement(theValueSetToExpand.getDateElement());
 		valueSet.setPublisherElement(theValueSetToExpand.getPublisherElement());
