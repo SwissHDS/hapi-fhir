@@ -483,13 +483,15 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 				b.append(". Chain was: ");
 				for (String nextInChain : theChain) {
 					TermConcept nextCode = theCode2concept.get(nextInChain);
-					b.append(nextCode.getCode());
-					b.append('[');
-					b.append(StringUtils.substring(nextCode.getDisplay(), 0, 20)
-							.replace("[", "")
-							.replace("]", "")
-							.trim());
-					b.append("] ");
+					if (nextCode.getDisplay() != null) {
+						b.append(nextCode.getCode());
+						b.append('[');
+						b.append(StringUtils.substring(nextCode.getDisplay(), 0, 20)
+								.replace("[", "")
+								.replace("]", "")
+								.trim());
+						b.append("] ");
+					}
 				}
 				ourLog.info(b.toString(), theConcept.getCode());
 				childIter.remove();
@@ -1092,7 +1094,10 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 		cs.setStatus(Enumerations.PublicationStatus.ACTIVE);
 		// The uploader does not allow `:` inside the header value.
 		// To circumvent this, URL-encoding is allowed and decoded here.
-		cs.setVersion(UriUtils.decode(theRequestDetails.getHeader("X-SNOMED-CT-VERSION"), "UTF-8"));
+		var version = theRequestDetails.getHeader("X-SNOMED-CT-VERSION");
+		if (version != null) {
+			cs.setVersion(UriUtils.decode(version, "UTF-8"));
+		}
 		IIdType target = storeCodeSystem(theRequestDetails, codeSystemVersion, cs, null, null);
 
 		return new UploadStatistics(code2concept.size(), target);
