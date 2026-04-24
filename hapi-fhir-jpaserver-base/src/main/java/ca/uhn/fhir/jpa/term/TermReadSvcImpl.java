@@ -142,6 +142,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.InstantType;
 import org.hl7.fhir.r4.model.IntegerType;
@@ -503,6 +504,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 	}
 
 	private void deletePreCalculatedValueSetContents(TermValueSet theValueSet) {
+		myValueSetConceptPropertyDao.deleteByTermValueSetId(theValueSet.getId());
 		myValueSetConceptDesignationDao.deleteByTermValueSetId(theValueSet.getId());
 		myValueSetConceptDao.deleteByTermValueSetId(theValueSet.getId());
 	}
