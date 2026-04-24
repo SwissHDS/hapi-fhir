@@ -1619,6 +1619,16 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			SearchPredicateFactory theF,
 			BooleanPredicateClausesStep<?> theB,
 			ValueSet.ConceptSetFilterComponent theFilter) {
+		// Lucene matches the regex against the whole string in all cases
+		// and does not support the start and end of input tokens (^ and $).
+		// Therefore, they need to be removed beforehand.
+		String value = theFilter.getValue();
+		if (value.endsWith("$")) {
+			value = value.substring(0, value.length() - 1);
+		}
+		if (value.startsWith("^")) {
+			value = value.substring(1);
+		}
 		theB.must(theF.regexp()
 				.field(
 						"code".equals(theFilter.getProperty()) || "concept".equals(theFilter.getProperty())
@@ -1626,7 +1636,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 								: "display".equals(theFilter.getProperty())
 										? "myDisplay"
 										: CONCEPT_PROPERTY_PREFIX_NAME + theFilter.getProperty())
-				.matching(theFilter.getValue()));
+				.matching(value));
 	}
 
 	private void handleFilterLoincCopyright(
