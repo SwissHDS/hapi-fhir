@@ -50,29 +50,21 @@ public class ResourceProviderR5CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(2);
 		
 		// 1. de-AT:Systolic blood pressure 12 hour minimum
 		ParametersParameterComponent designation = designationList.get(0);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertEquals("de-AT", designation.getPart().get(0).getValue().toString());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("de-AT:Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
+		assertEquals("de-AT", designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue().toString());
+		assertEquals("de-AT:Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 
 		// 2. Systolic blood pressure 12 hour minimum (no language)
 		designation = designationList.get(1);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertNull(designation.getPart().get(0).getValue());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
-
+		assertEquals(null, designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 	}
 
 	
@@ -94,21 +86,16 @@ public class ResourceProviderR5CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(1);
 		
 		// 1. Systolic blood pressure 12 hour minimum (no language)
 		ParametersParameterComponent designation = designationList.get(0);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertNull(designation.getPart().get(0).getValue());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
+		assertEquals(null, designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 
 	}
 	
@@ -129,35 +116,26 @@ public class ResourceProviderR5CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(3);
 		
 		// 1. fr-FR:Systolic blood pressure 12 hour minimum
 		ParametersParameterComponent designation = designationList.get(0);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertEquals("fr-FR", designation.getPart().get(0).getValue().toString());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("fr-FR:Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
+		assertEquals("fr-FR", designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue().toString());
+		assertEquals("fr-FR:Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 
 		// 2. de-AT:Systolic blood pressure 12 hour minimum
 		designation = designationList.get(1);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertEquals("de-AT", designation.getPart().get(0).getValue().toString());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("de-AT:Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
+		assertEquals("de-AT", designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue().toString());
+		assertEquals("de-AT:Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 
 		// 3. Systolic blood pressure 12 hour minimum (no language)
 		designation = designationList.get(2);
-		assertEquals("language", designation.getPart().get(0).getName());
-		assertNull(designation.getPart().get(0).getValue());
-		assertEquals("value", designation.getPart().get(2).getName());
-		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().get(2).getValue().toString());
+		assertEquals(null, designation.getPart().stream().filter(p -> p.getName().equals("language")).findFirst().orElseThrow().getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", designation.getPart().stream().filter(p -> p.getName().equals("value")).findFirst().orElseThrow().getValue().toString());
 
 	}
 	private List<ParametersParameterComponent> getDesignations(List<ParametersParameterComponent> parameterList) {

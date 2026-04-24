@@ -1107,7 +1107,7 @@ public class FhirResourceDaoR4SearchWithElasticSearchIT extends BaseJpaTest impl
 	private CodeSystem createExternalCs() {
 		CodeSystem codeSystem = new CodeSystem();
 		codeSystem.setUrl(URL_MY_CODE_SYSTEM);
-		codeSystem.setVersion("SYSTEM VERSION");
+		codeSystem.setVersion("1.0.0");
 		codeSystem.setContent(CodeSystem.CodeSystemContentMode.NOTPRESENT);
 		IIdType id = myCodeSystemDao.create(codeSystem, mySrd).getId().toUnqualified();
 
@@ -1144,7 +1144,7 @@ public class FhirResourceDaoR4SearchWithElasticSearchIT extends BaseJpaTest impl
 		TermConcept childCA = new TermConcept(cs, "childCA").setDisplay("Child CA");
 		parentC.addChild(childCA, TermConceptParentChildLink.RelationshipTypeEnum.ISA);
 
-		myTermCodeSystemStorageSvc.storeNewCodeSystemVersion(URL_MY_CODE_SYSTEM, "SYSTEM NAME", "SYSTEM VERSION", cs, table);
+		myTermCodeSystemStorageSvc.storeNewCodeSystemVersion(URL_MY_CODE_SYSTEM, "SYSTEM NAME", "1.0.0", cs, table);
 		return codeSystem;
 	}
 

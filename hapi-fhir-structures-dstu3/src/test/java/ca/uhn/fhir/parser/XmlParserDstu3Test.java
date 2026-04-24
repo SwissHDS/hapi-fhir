@@ -2393,7 +2393,7 @@ public class XmlParserDstu3Test {
 		assertEquals("Bundle/example/_history/1", parsed.getIdElement().getValue());
 		assertEquals("1", parsed.getMeta().getVersionId());
 		assertEquals("1", parsed.getIdElement().getVersionIdPart());
-		assertEquals(("2014-08-18T01:43:30Z"), parsed.getMeta().getLastUpdatedElement().getValueAsString());
+		assertEquals("2014-08-18T01:43:30Z", parsed.getMeta().getLastUpdatedElement().getValueAsString());
 		assertEquals("searchset", parsed.getType().toCode());
 		assertEquals(3, parsed.getTotal());
 		assertEquals("https://example.com/base/MedicationRequest?patient=347&searchId=ff15fd40-ff71-4b48-b366-09c706bed9d0&page=2", parsed.getLink("next").getUrl());
