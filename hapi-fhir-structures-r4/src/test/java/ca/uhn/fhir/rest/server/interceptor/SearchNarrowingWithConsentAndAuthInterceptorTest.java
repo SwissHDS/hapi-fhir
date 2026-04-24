@@ -125,9 +125,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
 		when(myValidationSupport.expandValueSet(any(), any(), eq(VALUESET_1_URL))).thenReturn(new IValidationSupport.ValueSetExpansionOutcome(createValueSet()));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -171,9 +171,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
 		when(myValidationSupport.expandValueSet(any(), any(), eq(VALUESET_1_URL))).thenReturn(new IValidationSupport.ValueSetExpansionOutcome(createValueSet()));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -219,9 +219,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
 		when(myValidationSupport.expandValueSet(any(), any(), eq(VALUESET_1_URL))).thenReturn(new IValidationSupport.ValueSetExpansionOutcome(createValueSet()));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -266,9 +266,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
 		when(myValidationSupport.expandValueSet(any(), any(), eq(VALUESET_1_URL))).thenReturn(new IValidationSupport.ValueSetExpansionOutcome(createValueSet()));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -314,9 +314,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 			.build();
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -367,9 +367,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 			.build();
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 
@@ -420,9 +420,9 @@ public class SearchNarrowingWithConsentAndAuthInterceptorTest {
 			.build();
 
 		mySearchNarrowingInterceptor.setPostFilterLargeValueSetThreshold(5);
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(matchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setCode(matchingCode));
-		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), null)).thenReturn(new IValidationSupport.CodeValidationResult()
+		when(myValidationSupport.validateCode(any(), any(), eq(CODESYSTEM_URL), eq(nonMatchingCode), any(), eq(VALUESET_1_URL), any())).thenReturn(new IValidationSupport.CodeValidationResult()
 			.setSeverity(IValidationSupport.IssueSeverity.ERROR)
 			.setMessage("Code could not be found!"));
 

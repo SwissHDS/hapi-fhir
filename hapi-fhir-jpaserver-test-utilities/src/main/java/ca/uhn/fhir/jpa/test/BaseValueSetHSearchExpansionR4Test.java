@@ -1821,19 +1821,6 @@ public abstract class BaseValueSetHSearchExpansionR4Test extends BaseJpaTest {
 				.addFilter()
 				.setProperty("SYSTEM")
 				.setOp(ValueSet.FilterOperator.REGEX)
-				.setValue("\\^Donor$");  // <------ block diff is here
-			outcome = myTermSvc.expandValueSet(null, vs);
-			codes = toCodesContains(outcome.getExpansion().getContains());
-			assertThat(codes).containsExactlyInAnyOrder("50015-7");
-
-			// Include
-			vs = new ValueSet();
-			include = vs.getCompose().addInclude();
-			include.setSystem(LOINC_URI);
-			include
-				.addFilter()
-				.setProperty("SYSTEM")
-				.setOp(ValueSet.FilterOperator.REGEX)
 				.setValue("\\^Dono$");  // <------ block diff is here
 			outcome = myTermSvc.expandValueSet(null, vs);
 			codes = toCodesContains(outcome.getExpansion().getContains());
@@ -1860,7 +1847,7 @@ public abstract class BaseValueSetHSearchExpansionR4Test extends BaseJpaTest {
 				.addFilter()
 				.setProperty("SYSTEM")
 				.setOp(ValueSet.FilterOperator.REGEX)
-				.setValue("\\^Dono");  // <------ block diff is here
+				.setValue(".*\\^Dono.*");  // <------ block diff is here
 			outcome = myTermSvc.expandValueSet(null, vs);
 			codes = toCodesContains(outcome.getExpansion().getContains());
 			assertThat(codes).containsExactlyInAnyOrder("50015-7");

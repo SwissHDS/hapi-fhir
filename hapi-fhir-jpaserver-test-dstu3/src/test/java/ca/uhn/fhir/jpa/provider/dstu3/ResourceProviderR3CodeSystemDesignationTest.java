@@ -50,11 +50,8 @@ public class ResourceProviderR3CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(2);
@@ -94,11 +91,8 @@ public class ResourceProviderR3CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(1);
@@ -129,11 +123,8 @@ public class ResourceProviderR3CodeSystemDesignationTest extends BaseResourcePro
 		List<ParametersParameterComponent> parameterList = respParam.getParameter();
 		List<ParametersParameterComponent> designationList = getDesignations(parameterList);
 
-		assertEquals("display", respParam.getParameter().get(0).getName());
-		assertEquals(("Systolic blood pressure 12 hour minimum"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-
-		assertEquals("abstract", respParam.getParameter().get(1).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(1).getValue()).getValue());
+		assertEquals("Systolic blood pressure 12 hour minimum", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		//-- designationList
 		assertThat(designationList).hasSize(3);

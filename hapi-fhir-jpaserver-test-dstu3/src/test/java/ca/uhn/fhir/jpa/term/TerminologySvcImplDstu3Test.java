@@ -1618,7 +1618,7 @@ public class TerminologySvcImplDstu3Test extends BaseJpaDstu3Test {
 			.addFilter()
 			.setProperty("SYSTEM")
 			.setOp(ValueSet.FilterOperator.REGEX)
-			.setValue("\\^Donor$");
+			.setValue(".*\\^Donor$");
 		outcome = myTermSvc.expandValueSet(null, vs);
 		codes = toCodesContains(outcome.getExpansion().getContains());
 		assertThat(codes).containsExactlyInAnyOrder("50015-7");
@@ -1631,7 +1631,7 @@ public class TerminologySvcImplDstu3Test extends BaseJpaDstu3Test {
 			.addFilter()
 			.setProperty("SYSTEM")
 			.setOp(ValueSet.FilterOperator.REGEX)
-			.setValue("\\^Dono$");
+			.setValue(".*\\^Dono$");
 		outcome = myTermSvc.expandValueSet(null, vs);
 		codes = toCodesContains(outcome.getExpansion().getContains());
 		assertThat(codes).isEmpty();
@@ -1657,7 +1657,7 @@ public class TerminologySvcImplDstu3Test extends BaseJpaDstu3Test {
 			.addFilter()
 			.setProperty("SYSTEM")
 			.setOp(ValueSet.FilterOperator.REGEX)
-			.setValue("\\^Dono");
+			.setValue(".*\\^Dono.*");
 		outcome = myTermSvc.expandValueSet(null, vs);
 		codes = toCodesContains(outcome.getExpansion().getContains());
 		assertThat(codes).containsExactlyInAnyOrder("50015-7");

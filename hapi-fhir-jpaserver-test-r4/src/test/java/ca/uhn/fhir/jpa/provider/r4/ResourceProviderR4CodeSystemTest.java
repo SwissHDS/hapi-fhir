@@ -101,14 +101,10 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		String resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals("SYSTEM NAME", ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("SYSTEM VERSION", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals("Parent A", ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("SYSTEM NAME", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("SYSTEM VERSION", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Parent A", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		// With HTTP GET
 		respParam = myClient
@@ -123,14 +119,10 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("SYSTEM NAME"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals(("SYSTEM VERSION"), ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals("Parent A", ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("SYSTEM NAME", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("SYSTEM VERSION", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Parent A", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 	}
 
@@ -147,14 +139,10 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		String resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals("v2.0203", ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2.9", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals("Accession ID", ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("v2.0203", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2.9", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Accession ID", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test
@@ -170,14 +158,10 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		String resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals("v2.0203", ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2.9", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals("Accession ID", ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("v2.0203", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2.9", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Accession ID", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test
@@ -209,12 +193,9 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		String resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(1).getName());
-		assertEquals(("Systolic blood pressure--expiration"), ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(2).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(2).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test
@@ -245,12 +226,9 @@ public class ResourceProviderR4CodeSystemTest extends BaseResourceProviderR4Test
 		String resp = myFhirContext.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(1).getName());
-		assertEquals(("Systolic blood pressure--expiration"), ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(2).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(2).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test

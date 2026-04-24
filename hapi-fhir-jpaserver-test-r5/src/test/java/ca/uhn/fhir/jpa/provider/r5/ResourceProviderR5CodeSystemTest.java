@@ -90,12 +90,9 @@ public class ResourceProviderR5CodeSystemTest extends BaseResourceProviderR5Test
 		String resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(1).getName());
-		assertEquals(("Systolic blood pressure--expiration"), ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(2).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(2).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test
@@ -169,12 +166,9 @@ public class ResourceProviderR5CodeSystemTest extends BaseResourceProviderR5Test
 		String resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(1).getName());
-		assertEquals(("Systolic blood pressure--expiration"), ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(2).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(2).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test

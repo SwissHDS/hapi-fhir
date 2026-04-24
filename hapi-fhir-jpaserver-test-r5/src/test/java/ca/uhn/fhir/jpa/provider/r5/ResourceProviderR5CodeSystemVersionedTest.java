@@ -96,14 +96,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		String resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v2"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		// Test with version set to 1
 		respParam = myClient
@@ -116,14 +112,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("1", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v1"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("1", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v1", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		// Test with version set to 2
 		respParam = myClient
@@ -136,14 +128,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v2"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 	}
 
@@ -161,14 +149,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		String resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v2"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		// Test with version 1 specified.
 		respParam = myClient
@@ -183,14 +167,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("1", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v1"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("1", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v1", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 
 		// Test with version 2 specified
 		respParam = myClient
@@ -205,14 +185,10 @@ public class ResourceProviderR5CodeSystemVersionedTest extends BaseResourceProvi
 		resp = myFhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(respParam);
 		ourLog.info(resp);
 
-		assertEquals("name", respParam.getParameter().get(0).getName());
-		assertEquals(("ACME Codes"), ((StringType) respParam.getParameter().get(0).getValue()).getValue());
-		assertEquals("version", respParam.getParameter().get(1).getName());
-		assertEquals("2", ((StringType) respParam.getParameter().get(1).getValue()).getValue());
-		assertEquals("display", respParam.getParameter().get(2).getName());
-		assertEquals(("Systolic blood pressure--expiration v2"), ((StringType) respParam.getParameter().get(2).getValue()).getValue());
-		assertEquals("abstract", respParam.getParameter().get(3).getName());
-		assertEquals(false, ((BooleanType) respParam.getParameter().get(3).getValue()).getValue());
+		assertEquals("ACME Codes", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("name")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("version")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals("Systolic blood pressure--expiration v2", ((StringType) respParam.getParameter().stream().filter(p -> p.getName().equals("display")).findFirst().orElseThrow().getValue()).getValue());
+		assertEquals(false, ((BooleanType) respParam.getParameter().stream().filter(p -> p.getName().equals("abstract")).findFirst().orElseThrow().getValue()).getValue());
 	}
 
 	@Test
