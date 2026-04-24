@@ -140,8 +140,8 @@ public class ResourceMergeServiceTest {
 	@BeforeEach
 	void setup() {
 		lenient().when(myDaoRegistryMock.getResourceDao("Patient")).thenReturn(myPatientDaoMock);
-		when(myDaoRegistryMock.getResourceDao(Task.class)).thenReturn(myTaskDaoMock);
-		when(myDaoRegistryMock.getResourceDao("Provenance")).thenReturn(myProvenanceDaoMock);
+		when(myDaoRegistryMock.getResourceDaoOrNull(Task.class)).thenReturn(myTaskDaoMock);
+		when(myDaoRegistryMock.<Provenance>getResourceDaoOrNull("Provenance")).thenReturn(myProvenanceDaoMock);
 		when(myDaoRegistryMock.getFhirContext()).thenReturn(myFhirContext);
 		lenient().when(myRequestDetailsMock.getResourceName()).thenReturn("Patient");
 
