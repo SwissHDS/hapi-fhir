@@ -288,18 +288,18 @@ public class ValueSetConceptAccumulator implements IValueSetConceptAccumulator {
 		ValidateUtil.isNotBlankOrThrowInvalidRequest(
 				theProperty.getValue(), "ValueSet contains a concept property with no value");
 
-		var designation = new TermValueSetConceptProperty();
-		designation.setConcept(theConcept);
-		designation.setValueSet(myTermValueSet);
-		designation.setKey(theProperty.getKey());
+		var property = new TermValueSetConceptProperty();
+		property.setConcept(theConcept);
+		property.setValueSet(myTermValueSet);
+		property.setKey(theProperty.getKey());
 		if (theProperty.hasValueBin()) {
-			designation.setValueBin(theProperty.getValueBinAsString());
+			property.setValueBin(theProperty.getValueBinAsString());
 		} else {
-			designation.setValue(theProperty.getValue());
+			property.setValue(theProperty.getValue());
 		}
-		designation.setDisplay(theProperty.getDisplay());
-		designation.setType(theProperty.getType());
-		myEntityManager.persist(designation);
+		property.setDisplay(theProperty.getDisplay());
+		property.setType(theProperty.getType());
+		myEntityManager.persist(property);
 
 		if (++myPropertiesSaved % 250 == 0) {
 			ourLog.debug(
