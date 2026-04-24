@@ -183,7 +183,8 @@ public class TermConcept implements Serializable {
 			analyzer = "autocompletePhoneticAnalyzer")
 	private String myDisplay;
 
-	@Column(name = "DEFINITION", nullable = true, length = MAX_DESC_LENGTH)
+	// DEFINITION is a keyword in MySQL
+	@Column(name = "DEFINITION_TEXT", nullable = true, length = MAX_DESC_LENGTH)
 	private String myDefinition;
 
 	@OneToMany(mappedBy = "myConcept", orphanRemoval = false, fetch = FetchType.LAZY)
