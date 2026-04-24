@@ -23,15 +23,11 @@ import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Subselect;
-import org.hibernate.type.SqlTypes;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -61,42 +57,9 @@ import java.sql.SQLException;
 				+ "       vscd.USE_SYSTEM                 AS DESIGNATION_USE_SYSTEM, "
 				+ "       vscd.USE_CODE                   AS DESIGNATION_USE_CODE, "
 				+ "       vscd.USE_DISPLAY                AS DESIGNATION_USE_DISPLAY, "
-				+ "       vscd.VAL                        AS DESIGNATION_VAL, "
-				+ "       null                            AS PROPERTY_PID, "
-				+ "       null                            AS PROPERTY_PROP_KEY, "
-				+ "       null                            AS PROPERTY_PROP_VAL, "
-				+ "       null                            AS PROPERTY_PROP_VAL_BIN, "
-				+ "       null                            AS PROPERTY_PROP_TYPE, "
-				+ "       null                            AS PROPERTY_PROP_CODESYSTEM, "
-				+ "       null                            AS PROPERTY_PROP_DISPLAY "
+				+ "       vscd.VAL                        AS DESIGNATION_VAL "
 				+ "FROM TRM_VALUESET_CONCEPT vsc "
-				+ "LEFT OUTER JOIN TRM_VALUESET_C_DESIGNATION vscd ON vsc.PID = vscd.VALUESET_CONCEPT_PID "
-				+ "UNION "
-				+ "SELECT CONCAT(vsc.PID, CONCAT(' ', vscp.PID)) AS PID, "
-				+ "       vsc.PID                         AS CONCEPT_PID, "
-				+ "       vsc.VALUESET_PID                AS CONCEPT_VALUESET_PID, "
-				+ "       vsc.VALUESET_ORDER              AS CONCEPT_VALUESET_ORDER, "
-				+ "       vsc.SYSTEM_URL                  AS CONCEPT_SYSTEM_URL, "
-				+ "       vsc.CODEVAL                     AS CONCEPT_CODEVAL, "
-				+ "       vsc.DISPLAY                     AS CONCEPT_DISPLAY, "
-				+ "       vsc.SYSTEM_VER                  AS SYSTEM_VER, "
-				+ "       vsc.SOURCE_PID                  AS SOURCE_PID, "
-				+ "       vsc.SOURCE_DIRECT_PARENT_PIDS   AS SOURCE_DIRECT_PARENT_PIDS, "
-				+ "       null                            AS DESIGNATION_PID, "
-				+ "       null                            AS DESIGNATION_LANG, "
-				+ "       null                            AS DESIGNATION_USE_SYSTEM, "
-				+ "       null                            AS DESIGNATION_USE_CODE, "
-				+ "       null                            AS DESIGNATION_USE_DISPLAY, "
-				+ "       null                            AS DESIGNATION_VAL, "
-				+ "       vscp.PID                        AS PROPERTY_PID, "
-				+ "       vscp.PROP_KEY                   AS PROPERTY_PROP_KEY, "
-				+ "       vscp.PROP_VAL                   AS PROPERTY_PROP_VAL, "
-				+ "       vscp.PROP_VAL_BIN               AS PROPERTY_PROP_VAL_BIN, "
-				+ "       vscp.PROP_TYPE                  AS PROPERTY_PROP_TYPE, "
-				+ "       vscp.PROP_CODESYSTEM            AS PROPERTY_PROP_CODESYSTEM, "
-				+ "       vscp.PROP_DISPLAY               AS PROPERTY_PROP_DISPLAY "
-				+ "FROM TRM_VALUESET_CONCEPT vsc "
-				+ "LEFT OUTER JOIN TRM_VALUESET_C_PROPERTY vscp ON vsc.PID = vscp.VALUESET_CONCEPT_PID")
+				+ "LEFT OUTER JOIN TRM_VALUESET_C_DESIGNATION vscd ON vsc.PID = vscd.VALUESET_CONCEPT_PID ")
 public class TermValueSetConceptViewOracle implements Serializable, ITermValueSetConceptView {
 	private static final long serialVersionUID = 1L;
 
@@ -142,29 +105,6 @@ public class TermValueSetConceptViewOracle implements Serializable, ITermValueSe
 
 	@Column(name = "DESIGNATION_VAL", length = TermConceptDesignation.MAX_VAL_LENGTH)
 	private String myDesignationVal;
-
-	@Column(name = "PROPERTY_PID")
-	private Long myPropertyPid;
-
-	@Column(name = "PROPERTY_PROP_KEY")
-	private String myPropertyKey;
-
-	@Column(name = "PROPERTY_PROP_VAL")
-	private String myPropertyVal;
-
-	@Column(name = "PROPERTY_PROP_VAL_BIN")
-	private byte[] myPropertyValBin;
-
-	@Enumerated(EnumType.ORDINAL)
-	@JdbcTypeCode(SqlTypes.INTEGER)
-	@Column(name = "PROPERTY_PROP_TYPE")
-	private TermConceptPropertyTypeEnum myPropertyType;
-
-	@Column(name = "PROPERTY_PROP_CODESYSTEM")
-	private String myPropertyCodeSystem;
-
-	@Column(name = "PROPERTY_PROP_DISPLAY")
-	private String myPropertyDisplay;
 
 	@Column(name = "SOURCE_PID", nullable = true)
 	private Long mySourceConceptPid;
@@ -243,40 +183,5 @@ public class TermValueSetConceptViewOracle implements Serializable, ITermValueSe
 	@Override
 	public String getDesignationVal() {
 		return myDesignationVal;
-	}
-
-	@Override
-	public Long getPropertyPid() {
-		return myPropertyPid;
-	}
-
-	@Override
-	public String getPropertyKey() {
-		return myPropertyKey;
-	}
-
-	@Override
-	public String getPropertyVal() {
-		return myPropertyVal;
-	}
-
-	@Override
-	public byte[] getPropertyValBin() {
-		return myPropertyValBin;
-	}
-
-	@Override
-	public TermConceptPropertyTypeEnum getPropertyType() {
-		return myPropertyType;
-	}
-
-	@Override
-	public String getPropertyCodeSystem() {
-		return myPropertyCodeSystem;
-	}
-
-	@Override
-	public String getPropertyDisplay() {
-		return myPropertyDisplay;
 	}
 }

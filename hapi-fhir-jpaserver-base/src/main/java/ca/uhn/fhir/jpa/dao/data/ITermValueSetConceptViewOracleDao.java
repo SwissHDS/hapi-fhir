@@ -19,6 +19,7 @@
  */
 package ca.uhn.fhir.jpa.dao.data;
 
+import ca.uhn.fhir.jpa.entity.TermValueSetConceptPropertyViewOracle;
 import ca.uhn.fhir.jpa.entity.TermValueSetConceptViewOracle;
 import ca.uhn.fhir.jpa.model.entity.IdAndPartitionId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,7 +36,17 @@ public interface ITermValueSetConceptViewOracleDao
 			@Param("from") int theFrom, @Param("to") int theTo, @Param("pid") Long theValueSetId);
 
 	@Query(
+			"SELECT v FROM TermValueSetConceptPropertyViewOracle v WHERE v.myConceptValueSetPid = :pid AND v.myConceptOrder >= :from AND v.myConceptOrder < :to ORDER BY v.myConceptOrder")
+	List<TermValueSetConceptPropertyViewOracle> findPropertiesByTermValueSetId(
+			@Param("from") int theFrom, @Param("to") int theTo, @Param("pid") Long theValueSetId);
+
+	@Query(
 			"SELECT v FROM TermValueSetConceptViewOracle v WHERE v.myConceptValueSetPid = :pid AND LOWER(v.myConceptDisplay) LIKE :display ORDER BY v.myConceptOrder")
 	List<TermValueSetConceptViewOracle> findByTermValueSetId(
+			@Param("pid") Long theValueSetId, @Param("display") String theDisplay);
+
+	@Query(
+			"SELECT v FROM TermValueSetConceptPropertyViewOracle v WHERE v.myConceptValueSetPid = :pid AND LOWER(v.myConceptDisplay) LIKE :display ORDER BY v.myConceptOrder")
+	List<TermValueSetConceptPropertyViewOracle> findPropertiesByTermValueSetId(
 			@Param("pid") Long theValueSetId, @Param("display") String theDisplay);
 }

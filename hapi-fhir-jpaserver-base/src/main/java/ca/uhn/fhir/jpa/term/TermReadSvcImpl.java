@@ -45,10 +45,12 @@ import ca.uhn.fhir.jpa.dao.data.ITermCodeSystemVersionDao;
 import ca.uhn.fhir.jpa.dao.data.ITermConceptDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptDesignationDao;
+import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptPropertyDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptViewDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetConceptViewOracleDao;
 import ca.uhn.fhir.jpa.dao.data.ITermValueSetDao;
 import ca.uhn.fhir.jpa.dao.tx.HapiTransactionService;
+import ca.uhn.fhir.jpa.entity.ITermValueSetConceptPropertyView;
 import ca.uhn.fhir.jpa.entity.ITermValueSetConceptView;
 import ca.uhn.fhir.jpa.entity.TermCodeSystem;
 import ca.uhn.fhir.jpa.entity.TermCodeSystemVersion;
@@ -227,6 +229,9 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 
 	@Autowired
 	protected ITermValueSetConceptDesignationDao myValueSetConceptDesignationDao;
+
+	@Autowired
+	protected ITermValueSetConceptPropertyDao myValueSetConceptPropertyDao;
 
 	@Autowired
 	protected FhirContext myContext;
@@ -753,6 +758,7 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 		int toIndex = offset + count;
 
 		Collection<? extends ITermValueSetConceptView> conceptViews;
+		Collection<? extends ITermValueSetConceptPropertyView> propertyConceptViews;
 		boolean wasFilteredResult = false;
 		String filterDisplayValue = null;
 		if (!theFilter.getFilters().isEmpty()
@@ -765,17 +771,25 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			if (theOracle) {
 				conceptViews =
 						myTermValueSetConceptViewOracleDao.findByTermValueSetId(theTermValueSet.getId(), displayValue);
+				propertyConceptViews = myTermValueSetConceptViewOracleDao.findPropertiesByTermValueSetId(
+						theTermValueSet.getId(), displayValue);
 			} else {
 				conceptViews = myTermValueSetConceptViewDao.findByTermValueSetId(theTermValueSet.getId(), displayValue);
+				propertyConceptViews = myTermValueSetConceptViewDao.findPropertiesByTermValueSetId(
+						theTermValueSet.getId(), displayValue);
 			}
 			wasFilteredResult = true;
 		} else {
 			if (theOracle) {
 				conceptViews = myTermValueSetConceptViewOracleDao.findByTermValueSetId(
 						offset, toIndex, theTermValueSet.getId());
+				propertyConceptViews = myTermValueSetConceptViewOracleDao.findPropertiesByTermValueSetId(
+						offset, toIndex, theTermValueSet.getId());
 			} else {
 				conceptViews =
 						myTermValueSetConceptViewDao.findByTermValueSetId(offset, toIndex, theTermValueSet.getId());
+				propertyConceptViews = myTermValueSetConceptViewDao.findPropertiesByTermValueSetId(
+						offset, toIndex, theTermValueSet.getId());
 			}
 			theAccumulator.consumeSkipCount(offset);
 			if (theAdd) {
@@ -834,17 +848,6 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 				}
 			}
 
-			if (conceptView.getPropertyPid() != null) {
-				TermConceptProperty property = new TermConceptProperty();
-				property.setKey(conceptView.getPropertyKey());
-				property.setValue(conceptView.getPropertyVal());
-				property.setValueBin(conceptView.getPropertyValBin());
-				property.setType(conceptView.getPropertyType());
-				property.setCodeSystem(conceptView.getPropertyCodeSystem());
-				property.setDisplay(conceptView.getPropertyDisplay());
-				pidToProperties.put(conceptPid, property);
-			}
-
 			if (theAccumulator.isTrackingHierarchy()) {
 				pidToSourcePid.put(conceptPid, conceptView.getSourceConceptPid());
 				pidToSourceDirectParentPids.put(conceptPid, conceptView.getSourceConceptDirectParentPids());
@@ -853,6 +856,17 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 			if (++conceptsExpanded % 250 == 0) {
 				logConceptsExpanded("Expansion of concepts in progress. ", theTermValueSet, conceptsExpanded);
 			}
+		}
+
+		for (var propertyConceptView : propertyConceptViews) {
+			TermConceptProperty property = new TermConceptProperty();
+			property.setKey(propertyConceptView.getPropertyKey());
+			property.setValue(propertyConceptView.getPropertyVal());
+			property.setValueBin(propertyConceptView.getPropertyValBin());
+			property.setType(propertyConceptView.getPropertyType());
+			property.setCodeSystem(propertyConceptView.getPropertyCodeSystem());
+			property.setDisplay(propertyConceptView.getPropertyDisplay());
+			pidToProperties.put(propertyConceptView.getConceptPid(), property);
 		}
 
 		for (Long nextPid : pidToConcept.keySet()) {

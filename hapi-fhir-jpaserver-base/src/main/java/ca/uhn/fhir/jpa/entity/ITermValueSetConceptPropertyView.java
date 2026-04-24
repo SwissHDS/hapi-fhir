@@ -19,30 +19,20 @@
  */
 package ca.uhn.fhir.jpa.entity;
 
-public interface ITermValueSetConceptView {
-	String getConceptSystemUrl();
-
-	String getConceptCode();
-
-	String getConceptDisplay();
-
-	String getConceptSystemVersion();
-
-	Long getSourceConceptPid();
-
-	String getSourceConceptDirectParentPids();
-
+public interface ITermValueSetConceptPropertyView {
 	Long getConceptPid();
 
-	Long getDesignationPid();
+	Long getPropertyPid();
 
-	String getDesignationUseSystem();
+	String getPropertyKey();
 
-	String getDesignationUseCode();
+	String getPropertyVal();
 
-	String getDesignationUseDisplay();
+	byte[] getPropertyValBin();
 
-	String getDesignationVal();
+	TermConceptPropertyTypeEnum getPropertyType();
 
-	String getDesignationLang();
+	String getPropertyCodeSystem();
+
+	String getPropertyDisplay();
 }
