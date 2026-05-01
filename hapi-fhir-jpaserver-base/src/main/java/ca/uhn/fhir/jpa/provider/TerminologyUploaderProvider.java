@@ -138,7 +138,8 @@ public class TerminologyUploaderProvider extends BaseJpaProvider {
 			UploadStatistics stats;
 			switch (codeSystemUrl) {
 				case ITermLoaderSvc.ICD10_URI:
-					stats = myTerminologyLoaderSvc.loadIcd10(localFiles, theRequestDetails);
+				case ITermLoaderSvc.ICD10GM_URI:
+					stats = myTerminologyLoaderSvc.loadIcd10(codeSystemUrl, localFiles, theRequestDetails);
 					break;
 				case ITermLoaderSvc.ICD10CM_URI:
 					stats = myTerminologyLoaderSvc.loadIcd10cm(localFiles, theRequestDetails);
