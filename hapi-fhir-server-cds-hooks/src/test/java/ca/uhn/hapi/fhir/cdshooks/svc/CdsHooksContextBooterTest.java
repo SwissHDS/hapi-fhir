@@ -29,7 +29,7 @@ class CdsHooksContextBooterTest {
 	void serializeExtensionsThrowsExceptionWhenInputIsInvalid() {
 		// setup
 		final String expected = "HAPI-2378: Invalid JSON: Unrecognized token 'abc': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n" +
-			" at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 4]";
+			" at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]";
 		// execute & validate
 		assertThatThrownBy(
 			() -> myFixture.serializeExtensions("abc", ExampleExtension.class))

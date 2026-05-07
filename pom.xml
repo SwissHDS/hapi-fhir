@@ -1077,9 +1077,9 @@
 		<hibernate_validator_version>8.0.0.Final</hibernate_validator_version>
 		<httpcore_version>4.4.16</httpcore_version>
 		<httpclient_version>4.5.14</httpclient_version>
-		<jackson_version>2.20.0</jackson_version>
-		<jackson_databind_version>2.20.0</jackson_databind_version>
-		<jackson_annotations_version>2.20</jackson_annotations_version>
+		<jackson_version>2.21.1</jackson_version>
+		<jackson_databind_version>2.21.1</jackson_databind_version>
+		<jackson_annotations_version>2.21</jackson_annotations_version>
 		<httpclient5_version>5.4.3</httpclient5_version>
 		<httpcore5_version>5.3.1</httpcore5_version>
 		<maven_assembly_plugin_version>3.3.0</maven_assembly_plugin_version>
@@ -1111,7 +1111,7 @@
 		<!-- Pinned here for CVE: CVE-2026-24734 -->
 		<tomcat_embed_core_version>10.1.52</tomcat_embed_core_version>
 		<spring_retry_version>2.0.10</spring_retry_version>
-		<json_path_version>2.9.0</json_path_version>
+		<json_path_version>2.10.0</json_path_version>
 		<jboss_logging_version>3.6.1.Final</jboss_logging_version>
 		<stax2_api_version>3.1.4</stax2_api_version>
 		<testcontainers_version>2.0.2</testcontainers_version>
