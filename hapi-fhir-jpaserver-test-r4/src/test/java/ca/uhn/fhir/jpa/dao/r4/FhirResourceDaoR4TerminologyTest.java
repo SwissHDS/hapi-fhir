@@ -1441,7 +1441,7 @@ public class FhirResourceDaoR4TerminologyTest extends BaseJpaR4Test {
 		// Verify
 		assertThat(result).isNotNull();
 		assertThat(result.isFound()).isTrue();
-		assertThat(result.getProperties()).hasSize(1);
+		assertThat(((IValidationSupport.BooleanConceptProperty)result.getProperties().stream().filter(p -> "conductible".equals(p.getPropertyName())).findFirst().orElseThrow()).getValue()).isTrue();
 	}
 
 	private ArrayList<String> toCodesContains(List<ValueSetExpansionContainsComponent> theContains) {

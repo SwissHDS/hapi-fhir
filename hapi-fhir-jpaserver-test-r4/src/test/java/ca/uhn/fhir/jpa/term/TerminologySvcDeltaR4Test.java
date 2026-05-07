@@ -718,12 +718,12 @@ public class TerminologySvcDeltaR4Test extends BaseJpaR4Test {
 		// Validate via the pre-expanded path — populates myValueSetCache
 		ValidationSupportContext ctx = new ValidationSupportContext(myValidationSupport);
 		ConceptValidationOptions options = new ConceptValidationOptions();
-		IValidationSupport.CodeValidationResult resultA = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeA", null, "http://foo/vs");
+		IValidationSupport.CodeValidationResult resultA = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeA", null, "http://foo/vs", null);
 		assertThat(resultA).isNotNull();
 		assertThat(resultA.isOk()).isTrue();
 
 		// codeB is not in the expansion yet
-		IValidationSupport.CodeValidationResult resultBBefore = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeB", null, "http://foo/vs");
+		IValidationSupport.CodeValidationResult resultBBefore = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeB", null, "http://foo/vs", null);
 		assertThat(resultBBefore).isNotNull();
 		assertThat(resultBBefore.isOk()).isFalse();
 
@@ -738,7 +738,7 @@ public class TerminologySvcDeltaR4Test extends BaseJpaR4Test {
 		myTermSvc.preExpandDeferredValueSetsToTerminologyTables();
 
 		// codeB must now validate successfully against the updated pre-expanded ValueSet
-		IValidationSupport.CodeValidationResult resultBAfter = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeB", null, "http://foo/vs");
+		IValidationSupport.CodeValidationResult resultBAfter = myValidationSupport.validateCode(ctx, options, "http://foo/cs", "codeB", null, "http://foo/vs", null);
 		assertThat(resultBAfter).isNotNull();
 		assertThat(resultBAfter.isOk()).isTrue();
 	}

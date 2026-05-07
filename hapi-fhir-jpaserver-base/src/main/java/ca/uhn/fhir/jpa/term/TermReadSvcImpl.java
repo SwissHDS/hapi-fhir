@@ -2112,7 +2112,8 @@ public class TermReadSvcImpl implements ITermReadSvc, IHasScheduledJobs {
 							next.getDisplay(),
 							next.getId(),
 							next.getParentPidsAsString(),
-							next.getDesignations());
+							next.getDesignations(),
+							next.getProperties());
 				}
 			}
 		}

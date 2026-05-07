@@ -19,6 +19,8 @@
  */
 package ca.uhn.fhir.jpa.entity;
 
+import org.hl7.fhir.common.hapi.validation.util.TermConceptPropertyTypeEnum;
+
 public interface ITermValueSetConceptPropertyView {
 	Long getConceptPid();
 

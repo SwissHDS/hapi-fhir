@@ -53,6 +53,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextFi
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hl7.fhir.common.hapi.validation.util.TermConceptPropertyTypeEnum;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;

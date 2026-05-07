@@ -130,6 +130,7 @@ class TermReadSvcImplTest {
 					UCUM_SYSTEM_URL,
 					UCUM_CODE,
 					null,
+					null,
 					null);
 		}
 

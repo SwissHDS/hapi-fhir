@@ -338,7 +338,7 @@ public class RemoteTerminologyValidateDisplayMismatchTest {
 				buildOOResponse(issue(DISPLAY_MISMATCH_DIAGNOSTICS, /*addExtension*/ true)));
 
 		IValidationSupport.CodeValidationResult outcome = mySvc.validateCode(
-				null, new ConceptValidationOptions().setValidateDisplay(true), CS_URL, CODE, /* blank */ "", null);
+				null, new ConceptValidationOptions().setValidateDisplay(true), CS_URL, CODE, /* blank */ "", null, null);
 
 		assertThat(outcome.getIssues()).hasSize(1);
 		assertThat(outcome.getIssues().get(0).getSeverity())
@@ -469,6 +469,7 @@ public class RemoteTerminologyValidateDisplayMismatchTest {
 				CS_URL,
 				CODE,
 				WRONG_CASE_DISPLAY,
+				null,
 				null);
 	}
 

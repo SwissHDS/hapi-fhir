@@ -760,7 +760,7 @@ public class ValidationSupportChainTest extends BaseTest {
 
 		when(myValidationSupport0.isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0))).thenReturn(false);
 		when(myValidationSupport1.isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0))).thenReturn(true);
-		when(myValidationSupport1.validateCode(any(), any(), any(), any(), any(), any()))
+		when(myValidationSupport1.validateCode(any(), any(), any(), any(), any(), any(), any()))
 			.thenAnswer(t -> new IValidationSupport.CodeValidationResult());
 
 		// First validation call - should use support1 and cache result
@@ -770,10 +770,11 @@ public class ValidationSupportChainTest extends BaseTest {
 			CODE_SYSTEM_URL_0,
 			CODE_0,
 			DISPLAY_0,
+			null,
 			null
 		);
 		assertNotNull(result1);
-		verify(myValidationSupport1, times(1)).validateCode(any(), any(), any(), any(), any(), any());
+		verify(myValidationSupport1, times(1)).validateCode(any(), any(), any(), any(), any(), any(), any());
 
 		// Second validation call - should hit cache
 		prepareMock(myValidationSupport0, myValidationSupport1);
@@ -786,6 +787,7 @@ public class ValidationSupportChainTest extends BaseTest {
 			CODE_SYSTEM_URL_0,
 			CODE_0,
 			DISPLAY_0,
+			null,
 			null
 		);
 
@@ -800,10 +802,10 @@ public class ValidationSupportChainTest extends BaseTest {
 		// since support1 was removed from the chain
 		prepareMock(myValidationSupport0, myValidationSupport1);
 		when(myValidationSupport0.isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0))).thenReturn(true);
-		when(myValidationSupport0.validateCode(any(), any(), any(), any(), any(), any()))
+		when(myValidationSupport0.validateCode(any(), any(), any(), any(), any(), any(), any()))
 			.thenAnswer(t -> new IValidationSupport.CodeValidationResult());
 		when(myValidationSupport1.isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0))).thenReturn(true);
-		when(myValidationSupport1.validateCode(any(), any(), any(), any(), any(), any()))
+		when(myValidationSupport1.validateCode(any(), any(), any(), any(), any(), any(), any()))
 			.thenAnswer(t -> new IValidationSupport.CodeValidationResult());
 
 		// Third validation call - cache invalidated, should only call support0
@@ -813,6 +815,7 @@ public class ValidationSupportChainTest extends BaseTest {
 			CODE_SYSTEM_URL_0,
 			CODE_0,
 			DISPLAY_0,
+			null,
 			null
 		);
 
@@ -821,11 +824,11 @@ public class ValidationSupportChainTest extends BaseTest {
 
 		// Verify support0 was called (it's still in the chain)
 		verify(myValidationSupport0, times(1)).isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0));
-		verify(myValidationSupport0, times(1)).validateCode(any(), any(), any(), any(), any(), any());
+		verify(myValidationSupport0, times(1)).validateCode(any(), any(), any(), any(), any(), any(), any());
 
 		// Verify support1 was NOT called (it was removed from the chain)
 		verify(myValidationSupport1, never()).isCodeSystemSupported(any(), eq(CODE_SYSTEM_URL_0));
-		verify(myValidationSupport1, never()).validateCode(any(), any(), any(), any(), any(), any());
+		verify(myValidationSupport1, never()).validateCode(any(), any(), any(), any(), any(), any(), any());
 	}
 
 

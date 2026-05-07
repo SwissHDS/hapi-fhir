@@ -782,7 +782,6 @@ public interface IValidationSupport {
 	String TYPE_DECIMAL = "decimal";
 	String TYPE_DATETIME = "dateTime";
 	String TYPE_STRING = "string";
-	String TYPE_CODE = "code";
 	String TYPE_BOOLEAN = "boolean";
 	String TYPE_CODING = "Coding";
 	String TYPE_GROUP = "group";
@@ -1457,10 +1456,6 @@ public interface IValidationSupport {
 				case TYPE_STRING:
 					StringConceptProperty stringConceptProperty = (StringConceptProperty) theConceptProperty;
 					ParametersUtil.addPartString(theContext, theProperty, "value", stringConceptProperty.getValue());
-					break;
-				case TYPE_CODE:
-					CodeConceptProperty codeConceptProperty = (CodeConceptProperty) theConceptProperty;
-					ParametersUtil.addPartCode(theContext, theProperty, "value", codeConceptProperty.getValue());
 					break;
 				case TYPE_BOOLEAN:
 					BooleanConceptProperty booleanConceptProperty = (BooleanConceptProperty) theConceptProperty;

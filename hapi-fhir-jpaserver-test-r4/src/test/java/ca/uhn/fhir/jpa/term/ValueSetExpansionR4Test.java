@@ -2189,7 +2189,7 @@ public class ValueSetExpansionR4Test extends BaseTermR4Test implements IValueSet
 		// This is the bug: currently the stale expansion (v1) is used and "order-received" is not found.
 		IValidationSupport.CodeValidationResult outcome = myValueSetDao.validateCode(
 			vs.getUrlElement(), null, new StringType("order-received"),
-			cs.getUrlElement(), null, null, null, mySrd);
+			cs.getUrlElement(), null, null, null, null, mySrd);
 		assertTrue(outcome.isOk(), "Validating a code added in the updated CodeSystem should succeed, but got: " + outcome.getMessage());
 	}
 

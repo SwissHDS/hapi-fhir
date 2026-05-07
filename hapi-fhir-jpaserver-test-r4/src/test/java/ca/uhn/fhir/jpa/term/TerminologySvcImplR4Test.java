@@ -712,7 +712,7 @@ public class TerminologySvcImplR4Test extends BaseTermR4Test {
 
 		// Prime both caches with valid lookups
 		IValidationSupport.CodeValidationResult csResult = myTermSvc.validateCode(
-			valCtx, new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null);
+			valCtx, new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null, null);
 		assertThat(csResult).isNotNull();
 		assertThat(csResult.isOk()).isTrue();
 
@@ -725,7 +725,7 @@ public class TerminologySvcImplR4Test extends BaseTermR4Test {
 
 		// Code system version cache must repopulate from DB — lookup still correct
 		IValidationSupport.CodeValidationResult csResultAfter = myTermSvc.validateCode(
-			valCtx, new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null);
+			valCtx, new ConceptValidationOptions(), CS_URL, "ParentWithNoChildrenA", null, null, null);
 		assertThat(csResultAfter).isNotNull();
 		assertThat(csResultAfter.isOk()).isTrue();
 

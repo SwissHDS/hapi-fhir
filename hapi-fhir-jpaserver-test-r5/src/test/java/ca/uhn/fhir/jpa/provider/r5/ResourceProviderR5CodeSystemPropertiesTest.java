@@ -93,10 +93,8 @@ public class ResourceProviderR5CodeSystemPropertiesTest extends BaseResourceProv
 
 		// Verify
 		assertNotNull(lookupResult);
-		assertEquals(1, lookupResult.getProperties().size());
 
-		IValidationSupport.BaseConceptProperty property = lookupResult.getProperties().get(0);
-		assertEquals("property-code", property.getPropertyName());
+		IValidationSupport.BaseConceptProperty property = lookupResult.getProperties().stream().filter(p -> p.getPropertyName().equals("property-code")).findFirst().orElseThrow();
 		switch (theType) {
 			case STRING -> assertEquals("value", ((IValidationSupport.StringConceptProperty) property).getValue());
 			case CODE -> assertEquals("value", ((IValidationSupport.CodeConceptProperty) property).getValue());

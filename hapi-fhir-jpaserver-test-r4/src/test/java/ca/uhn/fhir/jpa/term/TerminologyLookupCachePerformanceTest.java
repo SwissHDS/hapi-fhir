@@ -99,13 +99,13 @@ class TerminologyLookupCachePerformanceTest extends BaseJpaR4Test {
 		ConceptValidationOptions opts = new ConceptValidationOptions();
 
 		// Warm
-		myTermSvc.validateCode(valCtx, opts, url, "codeA", null, null);
+		myTermSvc.validateCode(valCtx, opts, url, "codeA", null, null, null);
 
 		// Measure
 		StopWatch sw = new StopWatch();
 		for (int i = 0; i < LOOKUP_ITERATIONS; i++) {
 			IValidationSupport.CodeValidationResult result =
-				myTermSvc.validateCode(valCtx, opts, url, "codeA", null, null);
+				myTermSvc.validateCode(valCtx, opts, url, "codeA", null, null, null);
 			assertThat(result).isNotNull();
 			assertThat(result.isOk()).isTrue();
 		}
