@@ -26,10 +26,11 @@
 	</issueManagement>
 
 	<distributionManagement>
-		<site>
-			<id>git.server</id>
-			<url>scm:git:git@github.com:hapifhir/hapi-fhir.git</url>
-		</site>
+		<repository>
+			<id>github</id>
+			<name>GitHub SwissHDS Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/swisshds/hapi-fhir</url>
+		</repository>
 	</distributionManagement>
 
 	<scm>
