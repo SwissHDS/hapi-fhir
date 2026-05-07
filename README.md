@@ -22,6 +22,20 @@ You may get the collection for Postman or Bruno here:
 - [Postman Collection](https://github.com/SwissHDS/swiss-hds-terminolgy-provider/wiki/postmancollection_v0.9.json)
 - [Bruno Collection](https://github.com/SwissHDS/swiss-hds-terminolgy-provider/wiki/brunocollection_v0.9.json)
 
+## Releasing
+
+To release a new version, search and replace the current version in all pom.xml files.
+The current version can e.g. be found in the `<version>` tag in the root pom.xml.
+Search and replace this version with the new one (see "Versioning" below) across the repository.
+After this has been committed, run the [maven artifacts workflow](https://github.com/SwissHDS/hapi-fhir/actions/workflows/build-maven-artifacts.yml) by triggering it via "Run workflow".
+
+### Versioning
+
+The version numbers used in this fork are based on the upstream version and use a `-ch-X` suffix
+where X is a counter starting at 1 for any specific upstream version.
+This way, multiple versions can be released here for any upstream version
+while still keeping the relationship to the upstream intact.
+
 ## Documentation and wiki
 
 For the documentation of this fork, please see [Swiss Terminology Provider Wiki](https://github.com/SwissHDS/swiss-hds-terminology-provider/wiki). 
