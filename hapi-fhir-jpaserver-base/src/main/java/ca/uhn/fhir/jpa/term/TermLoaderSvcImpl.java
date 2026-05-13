@@ -340,12 +340,11 @@ public class TermLoaderSvcImpl implements ITermLoaderSvc {
 	}
 
 	@Override
-	public UploadStatistics loadIcd10(
-			String theSystem, List<FileDescriptor> theFiles, RequestDetails theRequestDetails) {
-		ourLog.info("Beginning ICD-10 ({}) processing", theSystem);
+	public UploadStatistics loadIcd10(List<FileDescriptor> theFiles, RequestDetails theRequestDetails) {
+		ourLog.info("Beginning ICD-10 processing");
 
 		CodeSystem codeSystem = new CodeSystem();
-		codeSystem.setUrl(theSystem);
+		codeSystem.setUrl(ICD10_URI);
 		codeSystem.setContent(CodeSystem.CodeSystemContentMode.NOTPRESENT);
 		codeSystem.setStatus(Enumerations.PublicationStatus.ACTIVE);
 
