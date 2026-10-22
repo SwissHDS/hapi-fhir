@@ -1,6 +1,8 @@
 HAPI FHIR Fork for the Swiss Terminology Provider
 =========
 
+⚠️ Development of the HAPI-FHIR-FORK is discontinued in this repository. The Swiss-HDS team develops the terminology provider and other services in a private setting. To keep communication open for changes and issues, we are keeping this repository open.
+
 This Fork of the HAPI FHIR project adds functionality required for the Swiss Terminology Provider. 
 It extends operations on ValueSets, CodeSystems and Concepts maps to match the FHIR Standard.
 
